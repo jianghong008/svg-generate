@@ -5,35 +5,44 @@ const {currentObject} = useStage();
 
 </script>
 <template>
-    <div>
+    <div class="right">
         <h3>属性</h3>
-        <div class="plane" v-if="currentObject.element">
+        <div class="right-plane" v-if="currentObject.element">
             <h3>{{ currentObject.element.type }}</h3>
-            <div>
-                <span>x: </span>
+            <div class="right-plane-item">
+                <span>横向距离X</span>
                 <input type="number" v-model="currentObject.element.x">
             </div>
-            <div>
-                <span>y: </span>
+            <div class="right-plane-item">
+                <span>纵向距离Y</span>
                 <input type="number" v-model="currentObject.element.y">
             </div>
-            <div>
-                <span>画笔大小: </span>
+            <div class="right-plane-item">
+                <span>画笔大小</span>
                 <input type="number" v-model="currentObject.element.strokeWidth">
             </div>
-            <div>
-                <span>画笔颜色: </span>
+            <div class="right-plane-item">
+                <span>画笔颜色</span>
                 <input type="color" v-model="currentObject.element.stroke">
             </div>
-            <div>
-                <span>填充: </span>
+            <div class="right-plane-item">
+                <span>填充</span>
                 <input type="color" v-model="currentObject.element.fill">
             </div>
         </div>
     </div>
 </template>
 <style scoped>
-.plane input{
-    width: 3rem;
+.right-plane-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.right-plane-item span{
+    user-select: none;
+}
+.right-plane-item input{
+    max-width: 100%;
 }
 </style>

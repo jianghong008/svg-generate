@@ -14,7 +14,7 @@ function add_el(e: MouseEvent) {
         y: e.offsetY,
         id: createID()
     }))
-
+    stage.mouse.curElType = '';
 }
 function mousedown(e: MouseEvent) {
     stage.mouse.down = true;
@@ -37,14 +37,19 @@ function mousemove(e:MouseEvent) {
     <div @mousemove="mousemove" @mouseup="add_el">
         <svg view-box="0 0 500 500" xmlns="http://www.w3.org/2000/svg" @mousedown="mousedown">
             <template v-for="el in stage.elements">
-                <rect :id="el.id" v-if="el.type == 'rect'" :x="el.x" :y="el.y" width="30" height="30" 
+                <rect :id="el.id" 
+                v-if="el.type == 'rect'" :x="el.x" :y="el.y" width="30" height="30"
+                :class="{'el-active':el.id===stage.currentObject.element?.id}"
                 :stroke="el.stroke"
                 :stroke-width="el.strokeWidth"
                 :fill="el.fill" 
-                :fill-opacity="el.fillOpacity">
+                :fill-opacity="el.fillOpacity"
+                >
                     <animate attributeName="width" values="0;30;0" ketTimes="0;1s;2s" dur="2s" repeatCount="indefinite" />
                 </rect>
-                <circle :id="el.id" v-else-if="el.type == 'circle'" :cx="el.x" :cy="el.y" r="30"
+                <circle :id="el.id" 
+                v-else-if="el.type == 'circle'" :cx="el.x" :cy="el.y" r="30"
+                :class="{'el-active':el.id===stage.currentObject.element?.id}"
                 :stroke="el.stroke"
                 :stroke-width="el.strokeWidth"
                 :fill="el.fill" 
@@ -58,5 +63,8 @@ function mousemove(e:MouseEvent) {
 <style scoped>
 svg {
     border: dashed 1px gray;
+}
+.el-active{
+    outline: dashed 1px #FF5722;
 }
 </style>

@@ -12,11 +12,11 @@ export const createObject = (el: StageElement) => {
     }
 
     if (el.fill === undefined) {
-        el.fill = '#00000';
+        el.fill = '#000000';
     }
 
     if (el.stroke === undefined) {
-        el.stroke = '#00000';
+        el.stroke = '#000000';
     }
 
     return el;
