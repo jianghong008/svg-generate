@@ -32,6 +32,7 @@ function mousemove(e:MouseEvent) {
     }
     stage.moveElement(e.offsetX,e.offsetY)
 }
+console.log()
 </script>
 <template>
     <div @mousemove="mousemove" @mouseup="add_el">

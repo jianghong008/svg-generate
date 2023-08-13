@@ -10,11 +10,11 @@ const {currentObject} = useStage();
         <div class="right-plane" v-if="currentObject.element">
             <h3>{{ currentObject.element.type }}</h3>
             <div class="right-plane-item">
-                <span>横向距离X</span>
+                <span>横向X</span>
                 <input type="number" v-model="currentObject.element.x">
             </div>
             <div class="right-plane-item">
-                <span>纵向距离Y</span>
+                <span>纵向Y</span>
                 <input type="number" v-model="currentObject.element.y">
             </div>
             <div class="right-plane-item">
@@ -35,14 +35,15 @@ const {currentObject} = useStage();
 <style scoped>
 .right-plane-item{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    
+    justify-content: space-between;
+    padding: 0 1em;
 }
 .right-plane-item span{
     user-select: none;
 }
-.right-plane-item input{
-    max-width: 100%;
+.right-plane-item input:not(input[type='color']){
+    width: 5em;
 }
 </style>
