@@ -1,22 +1,32 @@
 <script setup lang="ts">
+import { ElementObjectType } from '@/objects/ElementObject';
 import {useStage} from '../store/stage'
 
 const stage = useStage()
 const ElementTypes = [
     {
         name:'矩形',
-        key:'rect'
+        key:ElementObjectType.rect
     },
     {
         name:'圆',
-        key:'circle'
+        key:ElementObjectType.circle
     },
     {
-        name:'直线',
-        key:'line'
-    }
+        name:'椭圆',
+        key:ElementObjectType.ellipse
+    },
+    {
+        name:'路径',
+        key:ElementObjectType.path
+    },
+    {
+        name:'文本',
+        key:ElementObjectType.text
+    },
+    
 ]
-function choose_type(key:string){
+function choose_type(key:ElementObjectType){
     stage.mouse.curElType = key;
 }
 function choose_el(id:string){
@@ -26,16 +36,16 @@ function choose_el(id:string){
 <template>
     <div class="contr">
         <h3>图形</h3>
-        <div>
-            <p v-for="e in ElementTypes" @click="choose_type(e.key)" :class="{'type-active':e.key===stage.mouse.curElType}">
+        <div class="list">
+            <span v-for="e in ElementTypes" @click="choose_type(e.key)" :class="{'type-active':e.key===stage.mouse.curElType}">
                 {{ e.name }}
-            </p>
+            </span>
         </div>
         <h3>文档</h3>
-        <div>
-            <p v-for="e in stage.elements" @click="choose_el(e.id)" :class="{'el-active':e.id===stage.currentObject.element?.id}">
-                {{ e.type }}
-            </p>
+        <div class="list">
+            <span v-for="e in stage.elements" @click="choose_el(e.id)" :class="{'el-active':e.id===stage.currentObject.element?.id}">
+                {{ e.name }}
+            </span>
         </div>
     </div>
 </template>
@@ -45,5 +55,10 @@ function choose_el(id:string){
 }
 .el-active{
     outline: dashed 1px #FF5722;
+}
+.contr .list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 </style>

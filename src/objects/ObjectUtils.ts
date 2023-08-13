@@ -6,7 +6,10 @@
  * Last Modified: Sunday, 2023-08-13 11:47:59
  * Modified By: jianghong (jianghong2020@qq.com)
  */
-
+export enum FillRule{
+    NONZERO='nonzero',
+    EVENODD='evenodd'
+}
 /**
  * 滤镜
  */
