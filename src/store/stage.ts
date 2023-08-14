@@ -1,14 +1,23 @@
-
-import { ElementObject, ElementObjectType } from '@/objects/ElementObject';
 import { defineStore } from 'pinia'
 import { reactive } from 'vue';
-type StageObject = {
-    element: null | ElementObject,
-    last: null | ElementObject,
+import {
+    CircleObject,
+    ElementObject,
+    ElementObjectType,
+    EllipseObject,
+    PathObject,
+    RectObject,
+    TextObject
+} from '@/objects/ElementObject';
+import { StageObject, SvgObject } from '@/objects/StageObject';
+type StageObjectType = {
+    element: null | StageObject,
+    last: null | StageObject,
 }
 
 export const useStage = defineStore('stage', () => {
-    const elements = reactive<ElementObject[]>([]);
+    const RootTageObject = new SvgObject()
+    const elements = reactive(RootTageObject);
     const mouse = reactive({
         down: false,
         curElType: 0,
@@ -17,7 +26,7 @@ export const useStage = defineStore('stage', () => {
         x: 0,
         y: 0,
     })
-    const currentObject = reactive<StageObject>({
+    const currentObject = reactive<StageObjectType>({
         element: null,
         last: null
     })
@@ -27,7 +36,13 @@ export const useStage = defineStore('stage', () => {
             currentObject.element = null;
             return;
         }
-        elements.forEach(el => {
+        if (id === elements.id) {
+            currentObject.last = currentObject.element;
+            currentObject.element = elements;
+            
+            return
+        }
+        elements.children.forEach(el => {
             if (el.id === id) {
                 currentObject.last = currentObject.element;
                 currentObject.element = el;
@@ -39,7 +54,7 @@ export const useStage = defineStore('stage', () => {
         if (!currentObject.element) {
             return
         }
-        elements.forEach(el => {
+        elements.children.forEach(el => {
             if (el.id === currentObject.element?.id) {
                 el.x = x - mouse.x + el.initX;
                 el.y = y - mouse.y + el.initY;
@@ -53,22 +68,52 @@ export const useStage = defineStore('stage', () => {
         if (!currentObject.element) {
             return
         }
-        elements.forEach(el => {
+        elements.children.forEach(el => {
             if (el.id === currentObject.element?.id && el.type === ElementObjectType.path) {
                 el.closePath();
                 return;
             }
         })
     }
-    const addElement = (el: ElementObject) => {
+    const addElement = (x: number, y: number) => {
+        if (mouse.curElType === ElementObjectType.none) {
+            return
+        }
+        let obj: ElementObject | null = null;
+        switch (mouse.curElType) {
+            case ElementObjectType.rect:
+                obj = new RectObject(x, y);
+                break;
+            case ElementObjectType.circle:
+                obj = new CircleObject(x, y);
+                break;
+            case ElementObjectType.path:
+                obj = new PathObject(x, y);
+                mouse.drawing = true;
+                break;
+            case ElementObjectType.ellipse:
+                obj = new EllipseObject(x, y);
+                break;
+            case ElementObjectType.text:
+                obj = new TextObject(x, y);
+                break;
+        }
+        if (!obj) {
+            return
+        }
+        chooseElement(obj.id);
         let count = 0;
-        for (let i = 0; i < elements.length; i++) {
-            if (elements[i].type === el.type) {
+        for (let i = 0; i < elements.children.length; i++) {
+            if (elements.children[i].type === obj.type) {
                 count++;
             }
         }
-        el.name = el.name + count;
-        elements.push(el);
+
+        obj.name = obj.name + count;
+        elements.children.push(obj);
+        if (mouse.curElType !== ElementObjectType.path) {
+            endDraw();
+        }
     }
     return {
         elements,

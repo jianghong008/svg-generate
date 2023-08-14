@@ -43,7 +43,7 @@ const getValue = (key: string | symbol) => {
             <h3>{{ currentObject.element.name }}</h3>
             <div v-for="k in propertys" class="right-plane-item" :key="k">
                 <template v-if="typeof k === 'string' && getValue('_' + k)">
-                    <span>{{ getValue('_' + k) }}</span>
+                    <span>{{ getValue('_' + k) }}-- {{ getValue(k).length }}</span>
                     <input v-if="typeof getValue(k) === 'number'" type="number" @change="setValue(k, $event.target)"
                         :value="getValue(k)">
                     <input v-if="typeof getValue(k) === 'string'" type="text" @change="setValue(k, $event.target, true)"

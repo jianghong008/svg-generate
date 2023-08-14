@@ -8,7 +8,8 @@
  */
 
 import { SvgColor } from "./Color";
-import { FilterObject } from "./ObjectUtils";
+import { FilterObject, StageObecjArray, UseObjectValue, panelTitle } from "./ObjectUtils";
+import { StageObject } from "./StageObject";
 export enum FillRule {
     NONZERO = 'nonzero',
     EVENODD = 'evenodd'
@@ -20,6 +21,7 @@ export enum ElementObjectType {
     path,
     ellipse,
     text,
+    svg,
 }
 export enum PathDrawMethod {
     M = 'M',
@@ -35,17 +37,11 @@ export interface PathDrawItem {
         y: number
     }[]
 }
-function panelTitle(title: string) {
-    return (target: ElementObject, key: string) => {
-        Reflect.defineProperty(target, '_' + key, {
-            value:title
-        });
-    }
-}
-export class ElementObject {
-    public id: string = '';
-    public name: string = 'element';
-    public type = ElementObjectType.none;
+
+/**
+ * 元素组件
+ */
+export class ElementObject extends StageObject {
     public initX = 0;
     public initY = 0;
     @panelTitle('左边')
@@ -63,17 +59,6 @@ export class ElementObject {
     public filter: string = FilterObject.none();
     public fillRule: FillRule = FillRule.NONZERO;
     public path: PathDrawItem[] = [];
-    constructor() {
-        this.id = this.createID();
-    }
-    createID() {
-        let str = '';
-        for (let i = 0; i < 8; i++) {
-            const r = Math.round(Math.random() * 26) + 96;
-            str += String.fromCharCode(r);
-        }
-        return str + '_' + Date.now() + '_' + Math.round(Math.random() * 10000);
-    }
     pathToString() {
         let s = ''
         for (let index = 0; index < this.path.length; index++) {
@@ -98,10 +83,6 @@ export class ElementObject {
         return s;
     }
 
-    getValue(key: string) {
-        return Reflect.get(this, key);
-    }
-
     closePath() {
         if (this.type !== ElementObjectType.path) {
             return
@@ -115,66 +96,64 @@ export class ElementObject {
         })
     }
 }
-export class SvgObject extends ElementObject {
 
-}
 export class RectObject extends ElementObject {
     @panelTitle('宽度')
-    public width = 0;
+    public width = 100;
     @panelTitle('高度')
-    public height = 0;
+    public height = 60;
     @panelTitle('圆角X')
     public rx = 0;
     @panelTitle('圆角Y')
     public ry = 0;
-    constructor(x: number, y: number, w: number, h: number) {
+    @panelTitle('特效组件')
+    public children = new StageObecjArray<StageObject>;
+    constructor(x: number, y: number) {
         super();
         this.x = x;
         this.y = y;
         this.initX = x;
         this.initY = y;
-        this.width = w;
-        this.height = h;
         this.type = ElementObjectType.rect;
         this.name = 'rect';
     }
 }
 export class CircleObject extends ElementObject {
     @panelTitle('半径')
-    public r = 0;
-    constructor(cx: number, cy: number, r: number) {
+    public r = 40;
+    constructor(cx: number, cy: number) {
         super();
         this.x = cx;
         this.y = cy;
         this.initX = cx;
         this.initY = cy;
-        this.r = r;
         this.type = ElementObjectType.circle;
         this.name = 'circle';
     }
 }
 export class EllipseObject extends ElementObject {
     @panelTitle('半径X')
-    public rx = 0;
+    public rx = 40;
     @panelTitle('半径Y')
-    public ry = 0;
-    constructor(cx: number, cy: number, rx: number,ry:number) {
+    public ry = 30;
+    constructor(cx: number, cy: number) {
         super();
         this.x = cx;
         this.y = cy;
         this.initX = cx;
         this.initY = cy;
-        this.rx = rx;
-        this.ry = ry;
         this.type = ElementObjectType.ellipse;
         this.name = 'ellipse';
     }
 }
 export class TextObject extends ElementObject {
-    @panelTitle('文本')
+    @panelTitle('文本内容')
     public text = 'hello';
     @panelTitle('字体大小')
     public fontSize = 16;
+    @panelTitle('文本字体')
+    public fontFamily: string = 'inherit';
+    public textLength: string = 'None';
     constructor(x: number, y: number) {
         super();
         this.x = x;
@@ -267,5 +246,34 @@ export class PathObject extends ElementObject {
                 y: endY
             }]
         })
+    }
+}
+/**
+ * 组合器
+ */
+export class GroupObject extends ElementObject {
+    constructor() {
+        super();
+        this.name = 'group';
+    }
+}
+
+/**
+ * 引用器
+ */
+export class UseObject extends ElementObject {
+    @panelTitle('引用')
+    public href: UseObjectValue = new UseObjectValue('');
+    @panelTitle('宽度')
+    public width = 100;
+    @panelTitle('高度')
+    public height = 60;
+    constructor(x: number, y: number) {
+        super();
+        this.x = x;
+        this.y = y;
+        this.initX = x;
+        this.initY = y;
+        this.name = 'use';
     }
 }

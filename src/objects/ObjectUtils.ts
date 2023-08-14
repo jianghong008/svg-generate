@@ -1,3 +1,5 @@
+import { StageObject } from "./StageObject";
+
 /*
  * Project: svg-generate
  * File Created: Sunday, 2023-08-13 11:47:59
@@ -9,6 +11,18 @@
 export enum FillRule{
     NONZERO='nonzero',
     EVENODD='evenodd'
+}
+/**
+ * 控制面板标注
+ * @param title 
+ * @returns 
+ */
+export function panelTitle(title: string) {
+    return (target: StageObject, key: string) => {
+        Reflect.defineProperty(target, '_' + key, {
+            value: title
+        });
+    }
 }
 /**
  * 滤镜
@@ -81,4 +95,19 @@ export class FilterObject {
     static url(val: string) {
         return `url(${val})`;
     }
+}
+
+export class UseObjectValue {
+    private _val = '';
+    constructor(color:string){
+        this._val = color;
+    }
+    
+    toString(){
+        return this._val;
+    }
+}
+
+export class StageObecjArray<T> extends Array<T>{
+
 }
