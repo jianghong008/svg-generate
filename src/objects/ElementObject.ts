@@ -80,7 +80,7 @@ export class ElementObject extends StageObject {
 
         }
 
-        return s;
+        return s + (this.closed?' Z':'');
     }
 
     closePath() {
@@ -165,6 +165,8 @@ export class TextObject extends ElementObject {
     }
 }
 export class PathObject extends ElementObject {
+    @panelTitle('闭合路径')
+    public closed: boolean = false;
     constructor(startX: number, startY: number) {
         super();
         this.x = startX;

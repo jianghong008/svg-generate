@@ -1,4 +1,4 @@
-import { ElementObjectType } from "./ElementObject";
+import { ElementObjectType, PathDrawItem } from "./ElementObject";
 import { StageObecjArray, panelTitle } from "./ObjectUtils";
 export class TransformType {
     private _val = 'rotate';
@@ -58,6 +58,8 @@ export class StageObject {
     public type = ElementObjectType.svg;
     public children = new StageObecjArray<StageObject>;
     public hasChildren = true;
+    public path: PathDrawItem[] = [];
+    public closed: boolean = false;
     constructor() {
         this.id = this.createID();
     }

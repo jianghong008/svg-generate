@@ -39,7 +39,7 @@ export const useStage = defineStore('stage', () => {
         if (id === elements.id) {
             currentObject.last = currentObject.element;
             currentObject.element = elements;
-            
+
             return
         }
         elements.children.forEach(el => {
@@ -62,18 +62,24 @@ export const useStage = defineStore('stage', () => {
             }
         })
     }
+    const stopMoveElement = () => {
+        if (!currentObject.element) {
+            return
+        }
+        elements.children.forEach(el => {
+            if (el.id === currentObject.element?.id) {
+                el.initX = el.x;
+                el.initY = el.y;
+                return;
+            }
+        })
+    }
     const endDraw = () => {
         mouse.curElType = ElementObjectType.none;
         mouse.drawing = false;
         if (!currentObject.element) {
             return
         }
-        elements.children.forEach(el => {
-            if (el.id === currentObject.element?.id && el.type === ElementObjectType.path) {
-                el.closePath();
-                return;
-            }
-        })
     }
     const addElement = (x: number, y: number) => {
         if (mouse.curElType === ElementObjectType.none) {
@@ -101,7 +107,7 @@ export const useStage = defineStore('stage', () => {
         if (!obj) {
             return
         }
-        chooseElement(obj.id);
+        
         let count = 0;
         for (let i = 0; i < elements.children.length; i++) {
             if (elements.children[i].type === obj.type) {
@@ -114,6 +120,11 @@ export const useStage = defineStore('stage', () => {
         if (mouse.curElType !== ElementObjectType.path) {
             endDraw();
         }
+        //选择此元素
+        if(mouse.drawing){
+            chooseElement(obj.id);
+        }
+        
     }
     return {
         elements,
@@ -123,5 +134,6 @@ export const useStage = defineStore('stage', () => {
         moveElement,
         endDraw,
         addElement,
+        stopMoveElement,
     }
 })

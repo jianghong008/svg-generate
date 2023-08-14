@@ -21,7 +21,12 @@ function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!currentObject.element) {
         return
     }
-    Reflect.set(currentObject.element, key, val)
+
+    if ((input as any).type === 'checkbox') {
+        Reflect.set(currentObject.element, key, (input as any).checked as boolean)
+    } else {
+        Reflect.set(currentObject.element, key, val)
+    }
 }
 const propertys = computed(() => {
     if (!currentObject.element) {
@@ -43,11 +48,13 @@ const getValue = (key: string | symbol) => {
             <h3>{{ currentObject.element.name }}</h3>
             <div v-for="k in propertys" class="right-plane-item" :key="k">
                 <template v-if="typeof k === 'string' && getValue('_' + k)">
-                    <span>{{ getValue('_' + k) }}-- {{ getValue(k).length }}</span>
+                    <span>{{ getValue('_' + k) }}</span>
                     <input v-if="typeof getValue(k) === 'number'" type="number" @change="setValue(k, $event.target)"
                         :value="getValue(k)">
-                    <input v-if="typeof getValue(k) === 'string'" type="text" @change="setValue(k, $event.target, true)"
-                        :value="getValue(k)">
+                    <input v-else-if="typeof getValue(k) === 'string'" type="text"
+                        @change="setValue(k, $event.target, true)" :value="getValue(k)">
+                    <input v-else-if="typeof getValue(k) === 'boolean'" type="checkbox"
+                        @change="setValue(k, $event.target, true)" :checked="getValue(k)">
                     <input v-else-if="(getValue(k) instanceof SvgColor)" type="color" @change="setColor(k, $event.target)"
                         :value="getValue(k)">
                 </template>
