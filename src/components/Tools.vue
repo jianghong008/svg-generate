@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { ElementObjectType } from '@/objects/ElementObject';
 import { useStage } from '../store/stage';
 
 const stage = useStage()
 function reset_mouse(){
-    stage.mouse.curElType = ''
+    stage.mouse.curElType = ElementObjectType.none;
 }
 </script>
 <template>
