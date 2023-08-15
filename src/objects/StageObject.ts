@@ -81,6 +81,7 @@ export class StageObject {
     pathToString() {
         return ''
     }
+    
 }
 /**
  * SVG 组件

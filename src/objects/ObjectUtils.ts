@@ -109,5 +109,18 @@ export class UseObjectValue {
 }
 
 export class StageObecjArray<T> extends Array<T>{
-
+    static EffctObjects = [
+        {
+            title:'通用动画',
+            key:'animate'
+        },
+        {
+            title:'路径动画',
+            key:'animateMotion'
+        },
+        {
+            title:'滤镜',
+            key:'filter'
+        }
+    ];
 }

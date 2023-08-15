@@ -2,6 +2,7 @@
 import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
 import { computed } from 'vue';
+import { StageObecjArray } from '@/objects/ObjectUtils'
 const { currentObject } = useStage();
 function setColor(key: string, input: EventTarget | null) {
     if (!input) {
@@ -40,6 +41,19 @@ const getValue = (key: string | symbol) => {
     }
     return Reflect.get(currentObject.element, key)
 }
+
+const addEffect = (key: string) => {
+    const input = window.document.getElementById(currentObject.element?.id + '_' + key);
+    if (!input) {
+        return
+    }
+    if (!currentObject.element) {
+        return
+    }
+    const ar = currentObject.element.children;
+    // Reflect.set(currentObject.element, key, ar);
+    // console.log(input.value)
+}
 </script>
 <template>
     <div class="right">
@@ -57,6 +71,24 @@ const getValue = (key: string | symbol) => {
                         @change="setValue(k, $event.target, true)" :checked="getValue(k)">
                     <input v-else-if="(getValue(k) instanceof SvgColor)" type="color" @change="setColor(k, $event.target)"
                         :value="getValue(k)">
+                    <div v-else-if="(getValue(k) instanceof StageObecjArray)">
+                        <details>
+                            <summary>集合</summary>
+                            <ul>
+                                <li>动画1</li>
+                                <li>动画2</li>
+                            </ul>
+                        </details>
+                        <div>
+                            <select :id="currentObject.element.id + '_' + k">
+                                <option v-for="(e, ei) in StageObecjArray.EffctObjects" :key="ei" :value="e.key">
+                                    {{ e.title }}
+                                </option>
+                            </select>
+                            <button @click="addEffect(k)">添加</button>
+                        </div>
+                    </div>
+
                 </template>
             </div>
         </div>
@@ -66,7 +98,7 @@ const getValue = (key: string | symbol) => {
 .right-plane-item {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     padding: 0 1em;
 }
