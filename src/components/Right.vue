@@ -2,7 +2,8 @@
 import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
 import { computed } from 'vue';
-import { StageObecjArray } from '@/objects/ObjectUtils'
+import { EffctEnum, StageObecjArray } from '@/objects/ObjectUtils'
+import { ElementObject } from '@/objects/ElementObject'
 const { currentObject } = useStage();
 function setColor(key: string, input: EventTarget | null) {
     if (!input) {
@@ -43,16 +44,15 @@ const getValue = (key: string | symbol) => {
 }
 
 const addEffect = (key: string) => {
-    const input = window.document.getElementById(currentObject.element?.id + '_' + key);
+    const input = window.document.getElementById(currentObject.element?.id + '_' + key) as HTMLInputElement;
     if (!input) {
         return
     }
     if (!currentObject.element) {
         return
     }
-    const ar = currentObject.element.children;
-    // Reflect.set(currentObject.element, key, ar);
-    // console.log(input.value)
+
+    currentObject.element.addChild(Number(input.value) as EffctEnum)
 }
 </script>
 <template>
@@ -71,17 +71,19 @@ const addEffect = (key: string) => {
                         @change="setValue(k, $event.target, true)" :checked="getValue(k)">
                     <input v-else-if="(getValue(k) instanceof SvgColor)" type="color" @change="setColor(k, $event.target)"
                         :value="getValue(k)">
-                    <div v-else-if="(getValue(k) instanceof StageObecjArray)">
+                    <div class="input-panel" v-else-if="(getValue(k) instanceof StageObecjArray)">
                         <details>
                             <summary>集合</summary>
                             <ul>
-                                <li>动画1</li>
-                                <li>动画2</li>
+                                <li v-for="a in currentObject.element.children" :key="a.id"
+                                    v-show="!(a instanceof ElementObject)">
+                                    {{ a.name }}
+                                </li>
                             </ul>
                         </details>
                         <div>
                             <select :id="currentObject.element.id + '_' + k">
-                                <option v-for="(e, ei) in StageObecjArray.EffctObjects" :key="ei" :value="e.key">
+                                <option v-for="e in StageObecjArray.EffctObjects" :key="e.key" :value="e.key">
                                     {{ e.title }}
                                 </option>
                             </select>
@@ -109,5 +111,11 @@ const addEffect = (key: string) => {
 
 .right-plane-item input:not(input[type='color']) {
     width: 5em;
+}
+
+.input-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 </style>

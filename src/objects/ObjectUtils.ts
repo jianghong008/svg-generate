@@ -8,9 +8,9 @@ import { StageObject } from "./StageObject";
  * Last Modified: Sunday, 2023-08-13 11:47:59
  * Modified By: jianghong (jianghong2020@qq.com)
  */
-export enum FillRule{
-    NONZERO='nonzero',
-    EVENODD='evenodd'
+export enum FillRule {
+    NONZERO = 'nonzero',
+    EVENODD = 'evenodd'
 }
 /**
  * 控制面板标注
@@ -99,28 +99,60 @@ export class FilterObject {
 
 export class UseObjectValue {
     private _val = '';
-    constructor(color:string){
+    constructor(color: string) {
         this._val = color;
     }
-    
-    toString(){
+
+    toString() {
         return this._val;
     }
 }
+export enum EffctEnum {
+    animate, animateMotion, filter
+}
+
+export const EffctEnumObjects = [
+    {
+        title: '通用动画',
+        key: EffctEnum.animate
+    },
+    {
+        title: '路径动画',
+        key: EffctEnum.animateMotion
+    },
+    {
+        title: '滤镜',
+        key: EffctEnum.filter
+    }
+]
 
 export class StageObecjArray<T> extends Array<T>{
-    static EffctObjects = [
-        {
-            title:'通用动画',
-            key:'animate'
-        },
-        {
-            title:'路径动画',
-            key:'animateMotion'
-        },
-        {
-            title:'滤镜',
-            key:'filter'
-        }
-    ];
+    static EffctObjects = EffctEnumObjects;
+}
+
+export class TransformObject {
+    public skewX = 0;
+    public skewY = 0;
+    public rotate = {
+        a: 0,
+        x: 0,
+        y: 0
+    }
+
+    public translate = {
+        x: 0,
+        y: 0
+    }
+    public scale = {
+        x: 1,
+        y: 1,
+    }
+
+    transformToString() {
+        const s = `rotate(${this.rotate.a},${this.rotate.x},${this.rotate.y}) 
+        translate(${this.translate.x},${this.translate.y}) 
+        scale(${this.scale.x},${this.scale.y}) 
+        skewX(${this.skewX}) skewY(${this.skewY})`
+        return s
+    }
 }

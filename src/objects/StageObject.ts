@@ -1,5 +1,5 @@
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
-import { StageObecjArray, panelTitle } from "./ObjectUtils";
+import { EffctEnum, StageObecjArray, TransformObject, panelTitle } from "./ObjectUtils";
 export class TransformType {
     private _val = 'rotate';
     constructor(val?: TransformTypeValue) {
@@ -60,6 +60,7 @@ export class StageObject {
     public hasChildren = true;
     public path: PathDrawItem[] = [];
     public closed: boolean = false;
+    public transform: TransformObject = new TransformObject();
     constructor() {
         this.id = this.createID();
     }
@@ -81,7 +82,15 @@ export class StageObject {
     pathToString() {
         return ''
     }
-    
+    addChild(t: EffctEnum) {
+        switch (t) {
+            case EffctEnum.animate:
+                const child = new AnimateObject();
+                child.name += this.children.length;
+                this.children.push(child);
+                break
+        }
+    }
 }
 /**
  * SVG 组件
