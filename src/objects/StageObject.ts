@@ -132,6 +132,7 @@ export class AnimateObject extends StageObject {
     public values: string[] = [];
     @panelTitle('时间点')
     public keyTimes: string[] = [];
+    public timeLine = new Map<string,string>();
     constructor() {
         super();
         this.hasChildren = false;

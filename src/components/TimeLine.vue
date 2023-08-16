@@ -15,7 +15,7 @@ const hasValue = (t: number) => {
         }
     }
 
-    for (let val of animate.keyTimes) {
+    for (let [val] of animate.timeLine) {
 
         if (t == Number(val)) {
             return {
@@ -29,44 +29,66 @@ const hasValue = (t: number) => {
         val: ''
     }
 }
-const showInput = (t: number) => {
+const showInput = (e: MouseEvent, t: number) => {
     const st = String((t - 1) / 10);
     const animate = currentObject.effect as AnimateObject;
-    if(!animate){
+    if (!animate) {
         return
     }
-    curIndex.value = t;
-    if(animate.keyTimes.includes(st)){
-        animate.keyTimes.forEach((val,index)=>{
-            if(st==val){
-                animate.keyTimes.splice(index,1);
-                animate.values.splice(index,1);
-                return
-            }
-        })
-    }else{
-        animate.keyTimes.push(st);
-        animate.keyTimes = animate.keyTimes.sort();
+    const has = animate.timeLine.has(st);
+    if (e.button === 0) {
+        if (!has) {
+            return
+        }
+        if (curIndex.value == t) {
+            curIndex.value = -1;
+            return
+        }
+        curIndex.value = t;
+        const val = animate.timeLine.get(st);
+        curVal.value = val !== undefined ? val : '';
+        return
+    } else if (e.button == 1) {
+        return;
     }
-    
+    curIndex.value = -1;
+    if (has) {
+        animate.timeLine.delete(st);
+    } else {
+        animate.timeLine.set(st, '');
+    }
+
 }
 const setVal = () => {
-    console.log(curVal.value)
+    const st = String((curIndex.value - 1) / 10);
+    const animate = currentObject.effect as AnimateObject;
+    if (!animate) {
+        return
+    }
+    animate.timeLine.set(st, curVal.value);
+    curIndex.value = -1;
 }
 </script>
 <template>
     <div class="box">
         <div class="time-line-box" v-if="(currentObject.effect instanceof AnimateObject)">
             <template v-for="t in MaxTime" :key="t">
-                <div class="main-time" :data-time="(t - 1) / 10" v-if="(t - 1) % 10 == 0 || (t - 1) == 0"
-                    v-show="t - 1 <= 100" :class="{ 'has-val': hasValue((t - 1) / 10).has }"
-                    :title="hasValue((t - 1) / 10).val" @click="showInput(t)">
-                    <input v-show="curIndex == t" type="text" v-model="curVal" @change="setVal">
+                <div class="main-time" :data-time="((t - 1) / 10) + 's'" v-if="(t - 1) % 10 == 0 || (t - 1) == 0"
+                    v-show="t - 1 <= 100"
+                    :class="{ 'has-val': hasValue((t - 1) / 10).has, 'cur-val': curIndex == t && hasValue((t - 1) / 10).has }"
+                    :title="hasValue((t - 1) / 10).val" @mousedown.self="showInput($event, t)">
+                    <div class="input" v-show="curIndex == t">
+                        <input type="text" v-model="curVal" placeholder="请输入当前值">
+                        <span @click.stop="setVal">确定</span>
+                    </div>
                 </div>
                 <div :data-time="(t - 1) / 10" v-else v-show="t - 1 <= 100"
-                    :class="{ 'has-val': hasValue((t - 1) / 10).has }" :title="hasValue((t - 1) / 10).val"
-                    @click="showInput(t)">
-                    <input v-show="curIndex == t" type="text" v-model="curVal" @change="setVal">
+                    :class="{ 'has-val': hasValue((t - 1) / 10).has, 'cur-val': curIndex == t && hasValue((t - 1) / 10).has }"
+                    :title="hasValue((t - 1) / 10).val" @mousedown.self="showInput($event, t)">
+                    <div class="input" v-show="curIndex == t">
+                        <input type="text" v-model="curVal" placeholder="请输入当前值">
+                        <span @click.stop="setVal">确定</span>
+                    </div>
                 </div>
             </template>
 
@@ -99,7 +121,7 @@ const setVal = () => {
     position: absolute;
     left: 0;
     bottom: -0.5rem;
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1rem;
     transform: translateY(100%) translateX(-25%);
 }
@@ -118,9 +140,50 @@ const setVal = () => {
     transform: translateY(-50%) translateX(-1px);
 }
 
-.time-line-box input{
+.time-line-box .input {
+    display: none;
+}
+
+.time-line-box .has-val .input {
+    position: absolute;
+    top: -1rem;
+    left: -3px;
+    transform: translateY(-100%) translateX(-45%);
+
+    display: inline-block;
+    z-index: 100;
+
+}
+
+.time-line-box .has-val .input>input {
+    width: 5rem;
+    padding: 0.6em 0.8em;
+    color: #607D8B;
+    outline: #607D8B;
+    border-color: #607D8B;
+}
+
+.time-line-box .cur-val::after {
+    content: '';
+    height: 0;
+    width: 0;
+    border-top: solid #607D8B 1rem;
+    border-bottom: 0;
+    border-left: solid transparent 3.6rem;
+    border-right: solid transparent 3.6rem;
+    transform: translateY(-100%) translateX(-45%);
     position: absolute;
     top: 0;
-    left: 0;
+    left: -3px;
+}
+
+.time-line-box .cur-val span {
+    width: 100%;
+    display: block;
+    cursor: pointer;
+}
+
+.time-line-box .cur-val span:hover {
+    background-color: #cbcbcb;
 }
 </style>
