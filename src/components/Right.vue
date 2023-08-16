@@ -4,6 +4,7 @@ import { useStage } from '@/store/stage';
 import { computed } from 'vue';
 import { EffctEnum, StageObecjArray } from '@/objects/ObjectUtils'
 import { ElementObject } from '@/objects/ElementObject'
+import { AnimateObject } from '@/objects/StageObject';
 const { currentObject } = useStage();
 function setColor(key: string, input: EventTarget | null) {
     if (!input) {
@@ -54,6 +55,14 @@ const addEffect = (key: string) => {
 
     currentObject.element.addChild(Number(input.value) as EffctEnum)
 }
+const chooseEffect = (id:string)=>{
+    currentObject.element?.children.forEach(ef=>{
+        if(ef instanceof AnimateObject && ef.id === id){
+            currentObject.effect = ef;
+            return
+        }
+    })
+}
 </script>
 <template>
     <div class="right">
@@ -76,7 +85,7 @@ const addEffect = (key: string) => {
                             <summary>集合</summary>
                             <ul>
                                 <li v-for="a in currentObject.element.children" :key="a.id"
-                                    v-show="!(a instanceof ElementObject)">
+                                    v-show="!(a instanceof ElementObject)" @click="chooseEffect(a.id)">
                                     {{ a.name }}
                                 </li>
                             </ul>

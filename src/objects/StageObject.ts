@@ -129,9 +129,9 @@ export class AnimateObject extends StageObject {
     @panelTitle('时长/s')
     public duration: number | string = 'indefinite';
     @panelTitle('取值组')
-    public values: string = '';
+    public values: string[] = [];
     @panelTitle('时间点')
-    public keyTimes: string = '';
+    public keyTimes: string[] = [];
     constructor() {
         super();
         this.hasChildren = false;

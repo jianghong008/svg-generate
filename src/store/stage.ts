@@ -13,6 +13,7 @@ import { StageObject, SvgObject } from '@/objects/StageObject';
 type StageObjectType = {
     element: null | StageObject,
     last: null | StageObject,
+    effect: null | StageObject
 }
 
 export const useStage = defineStore('stage', () => {
@@ -28,9 +29,11 @@ export const useStage = defineStore('stage', () => {
     })
     const currentObject = reactive<StageObjectType>({
         element: null,
-        last: null
+        last: null,
+        effect: null,
     })
     const chooseElement = (id?: string) => {
+        currentObject.effect = null;
         if (!id) {
             currentObject.last = currentObject.element;
             currentObject.element = null;
@@ -107,7 +110,7 @@ export const useStage = defineStore('stage', () => {
         if (!obj) {
             return
         }
-        
+
         let count = 0;
         for (let i = 0; i < elements.children.length; i++) {
             if (elements.children[i].type === obj.type) {
@@ -121,10 +124,10 @@ export const useStage = defineStore('stage', () => {
             endDraw();
         }
         //选择此元素
-        if(mouse.drawing){
+        if (mouse.drawing) {
             chooseElement(obj.id);
         }
-        
+
     }
     return {
         elements,

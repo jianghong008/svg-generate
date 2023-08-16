@@ -43,7 +43,7 @@ import TimeLine from './TimeLine.vue'
     width: 70vw;
 }
 .time-line{
-    grid-column: 1/6;
+    grid-column: 2/6;
     grid-row: 16/18;
     height: 8rem;
 }
