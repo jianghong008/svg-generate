@@ -16,3 +16,8 @@ interface StageObject {
     closePath: () => void
     pathToString: () => string
 }
+
+interface AnimateAttributeObjectItem {
+    title:string,
+    key:string
+}

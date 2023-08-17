@@ -32,8 +32,12 @@ export const useStage = defineStore('stage', () => {
         last: null,
         effect: null,
     })
-    const chooseElement = (id?: string) => {
-        currentObject.effect = null;
+    const chooseElement = (id?: string | StageObject) => {
+        if (id && id instanceof StageObject) {
+            currentObject.last = currentObject.element;
+            currentObject.element = id;
+            return
+        }
         if (!id) {
             currentObject.last = currentObject.element;
             currentObject.element = null;
@@ -119,6 +123,7 @@ export const useStage = defineStore('stage', () => {
         }
 
         obj.name = obj.name + count;
+        obj.parent = elements;
         elements.children.push(obj);
         if (mouse.curElType !== ElementObjectType.path) {
             endDraw();

@@ -2,10 +2,10 @@
 import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
 import { computed } from 'vue';
-import { EffctEnum, StageObecjArray } from '@/objects/ObjectUtils'
+import { EffctEnum, StageObecjArray,AnimateAttribute } from '@/objects/ObjectUtils'
 import { ElementObject } from '@/objects/ElementObject'
-import { AnimateObject } from '@/objects/StageObject';
-const { currentObject } = useStage();
+import { StageObject } from '@/objects/StageObject';
+const { currentObject, chooseElement } = useStage();
 function setColor(key: string, input: EventTarget | null) {
     if (!input) {
         return
@@ -55,13 +55,8 @@ const addEffect = (key: string) => {
 
     currentObject.element.addChild(Number(input.value) as EffctEnum)
 }
-const chooseEffect = (id:string)=>{
-    currentObject.element?.children.forEach(ef=>{
-        if(ef instanceof AnimateObject && ef.id === id){
-            currentObject.effect = ef;
-            return
-        }
-    })
+const chooseEffect = (id: StageObject) => {
+    chooseElement(id)
 }
 </script>
 <template>
@@ -85,7 +80,7 @@ const chooseEffect = (id:string)=>{
                             <summary>集合</summary>
                             <ul>
                                 <li v-for="a in currentObject.element.children" :key="a.id"
-                                    v-show="!(a instanceof ElementObject)" @click="chooseEffect(a.id)">
+                                    v-show="!(a instanceof ElementObject)" @click="chooseEffect(a)">
                                     {{ a.name }}
                                 </li>
                             </ul>
@@ -99,7 +94,11 @@ const chooseEffect = (id:string)=>{
                             <button @click="addEffect(k)">添加</button>
                         </div>
                     </div>
-
+                    <select v-else-if="(getValue(k) instanceof AnimateAttribute)">
+                        <option v-for="e in AnimateAttribute.GetAttributs(currentObject.element?.parent)" :key="e" :value="e">
+                            {{ e }}
+                        </option>
+                    </select>
                 </template>
             </div>
         </div>

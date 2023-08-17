@@ -7,7 +7,7 @@ const MaxTime = 101;
 const curVal = ref('');
 const curIndex = ref(-1);
 const hasValue = (t: number) => {
-    const animate = currentObject.effect as AnimateObject
+    const animate = currentObject.element as AnimateObject
     if (!animate) {
         return {
             has: false,
@@ -31,7 +31,7 @@ const hasValue = (t: number) => {
 }
 const showInput = (e: MouseEvent, t: number) => {
     const st = String((t - 1) / 10);
-    const animate = currentObject.effect as AnimateObject;
+    const animate = currentObject.element as AnimateObject;
     if (!animate) {
         return
     }
@@ -61,7 +61,7 @@ const showInput = (e: MouseEvent, t: number) => {
 }
 const setVal = () => {
     const st = String((curIndex.value - 1) / 10);
-    const animate = currentObject.effect as AnimateObject;
+    const animate = currentObject.element as AnimateObject;
     if (!animate) {
         return
     }
@@ -71,7 +71,7 @@ const setVal = () => {
 </script>
 <template>
     <div class="box">
-        <div class="time-line-box" v-if="(currentObject.effect instanceof AnimateObject)">
+        <div class="time-line-box" v-if="(currentObject.element instanceof AnimateObject)">
             <template v-for="t in MaxTime" :key="t">
                 <div class="main-time" :data-time="((t - 1) / 10) + 's'" v-if="(t - 1) % 10 == 0 || (t - 1) == 0"
                     v-show="t - 1 <= 100"

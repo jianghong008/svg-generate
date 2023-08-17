@@ -1,13 +1,5 @@
 import { StageObject } from "./StageObject";
 
-/*
- * Project: svg-generate
- * File Created: Sunday, 2023-08-13 11:47:59
- * Author: jianghong (jianghong2020@qq.com)
- * -----
- * Last Modified: Sunday, 2023-08-13 11:47:59
- * Modified By: jianghong (jianghong2020@qq.com)
- */
 export enum FillRule {
     NONZERO = 'nonzero',
     EVENODD = 'evenodd'
@@ -128,6 +120,31 @@ export const EffctEnumObjects = [
 
 export class StageObecjArray<T> extends Array<T>{
     static EffctObjects = EffctEnumObjects;
+}
+
+export class AnimateAttribute {
+    private _val = 'x';
+    constructor(val: string) {
+        this._val = val;
+    }
+
+    toString() {
+        return this._val;
+    }
+
+    public static GetAttributs(so?: StageObject) {
+        if(!so){
+            return []
+        }
+        const ar = Reflect.ownKeys(so);
+        const temp: string[] = [];
+        for (let k of ar) {
+            if (typeof k === 'string' && typeof Reflect.get(so, k) !== 'function') {
+                temp.push(k);
+            }
+        }
+        return temp;
+    }
 }
 
 export class TransformObject {

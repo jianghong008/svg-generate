@@ -1,5 +1,5 @@
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
-import { EffctEnum, StageObecjArray, TransformObject, panelTitle } from "./ObjectUtils";
+import { AnimateAttribute, EffctEnum, StageObecjArray, TransformObject, panelTitle } from "./ObjectUtils";
 export class TransformType {
     private _val = 'rotate';
     constructor(val?: TransformTypeValue) {
@@ -61,6 +61,7 @@ export class StageObject {
     public path: PathDrawItem[] = [];
     public closed: boolean = false;
     public transform: TransformObject = new TransformObject();
+    public parent:StageObject|null = null
     constructor() {
         this.id = this.createID();
     }
@@ -87,6 +88,7 @@ export class StageObject {
             case EffctEnum.animate:
                 const child = new AnimateObject();
                 child.name += this.children.length;
+                child.parent = this;
                 this.children.push(child);
                 break
         }
@@ -123,14 +125,12 @@ export class DefsObject extends StageObject {
  */
 export class AnimateObject extends StageObject {
     @panelTitle('变换属性')
-    public attributeName: string = '';
+    public attributeName: AnimateAttribute = new AnimateAttribute('x');
     @panelTitle('变换次数')
-    public repeatCount: number = 1;
+    public repeatCount: number|string = 'indefinite';
     @panelTitle('时长/s')
-    public duration: number | string = 'indefinite';
-    @panelTitle('取值组')
+    public duration: number = 1;
     public values: string[] = [];
-    @panelTitle('时间点')
     public keyTimes: string[] = [];
     public timeLine = new Map<string,string>();
     constructor() {
