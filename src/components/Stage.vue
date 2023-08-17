@@ -40,14 +40,6 @@ function stage_contextmenu(e: MouseEvent) {
     align-items: center;
 }
 
-svg {
-    border: dashed 1px gray;
-}
-
-.el-active {
-    outline: dashed 1px #FF5722;
-}
-
 .svg-box {
     position: relative;
 }

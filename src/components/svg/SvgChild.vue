@@ -3,6 +3,7 @@ import {
     ElementObjectType,
 } from '@/objects/ElementObject';
 import { useStage } from '@/store/stage'
+import SvgEffect from './SvgEffect.vue';
 const stage = useStage()
 </script>
 <template>
@@ -12,21 +13,28 @@ const stage = useStage()
             :stroke="el.getValue('stroke').toString()" :stroke-width="el.getValue('strokeWidth')"
             :fill="el.getValue('fill').toString()" :fill-opacity="el.getValue('fillOpacity')"
             :transform="el.transform.transformToString()" :rx="el.getValue('rx')" :ry="el.getValue('ry')">
+            <SvgEffect :data="el.children"/>
         </rect>
         <circle :data-id="el.id" v-else-if="el.type == ElementObjectType.circle" :cx="el.x" :cy="el.y" :r="el.getValue('r')"
             :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :stroke="el.getValue('stroke').toString()"
             :stroke-width="el.getValue('strokeWidth')" :fill="el.getValue('fill').toString()"
-            :fill-opacity="el.getValue('fillOpacity')" :transform="el.transform.transformToString()"></circle>
+            :fill-opacity="el.getValue('fillOpacity')" :transform="el.transform.transformToString()">
+            <SvgEffect :data="el.children"/>
+        </circle>
         <ellipse :data-id="el.id" v-else-if="el.type == ElementObjectType.ellipse" :cx="el.x" :cy="el.y"
             :rx="el.getValue('rx')" :ry="el.getValue('ry')"
             :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :stroke="el.getValue('stroke').toString()"
             :stroke-width="el.getValue('strokeWidth')" :fill="el.getValue('fill').toString()"
-            :fill-opacity="el.getValue('fillOpacity')" :transform="el.transform.transformToString()"></ellipse>
+            :fill-opacity="el.getValue('fillOpacity')" :transform="el.transform.transformToString()">
+            <SvgEffect :data="el.children"/>
+        </ellipse>
         <path :data-id="el.id" v-else-if="el.type == ElementObjectType.path"
             :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :x="el.x" :y="el.y" :d="el.pathToString()"
             :stroke="el.getValue('stroke').toString()" :stroke-width="el.getValue('strokeWidth')"
             :fill="el.getValue('fill').toString()" :transform="el.transform.transformToString()"
-            :fill-opacity="el.getValue('fillOpacity')" />
+            :fill-opacity="el.getValue('fillOpacity')" >
+            <SvgEffect :data="el.children"/>
+        </path>
         <text :data-id="el.id" v-else-if="el.type == ElementObjectType.text" :x="el.x" :y="el.y"
             :font-size="el.getValue('fontSize')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
             :stroke="el.getValue('stroke').toString()" :stroke-width="el.getValue('strokeWidth')"
@@ -36,3 +44,8 @@ const stage = useStage()
         </text>
     </template>
 </template>
+<style scoped>
+.el-active {
+    outline: dashed 1px #FF5722;
+}
+</style>

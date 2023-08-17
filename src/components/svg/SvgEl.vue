@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { PathObject } from '@/objects/ElementObject';
 import { useStage } from '@/store/stage';
+import SvgChild from './SvgChild.vue';
 const stage = useStage()
 
 function mousedown(e: MouseEvent) {
     stage.mouse.x = e.offsetX;
     stage.mouse.y = e.offsetY;
-
     if (stage.mouse.drawing && e.button == 0) {
         const obj = stage.currentObject.element as PathObject;
         if (!obj) {
@@ -36,5 +36,11 @@ function mousedown(e: MouseEvent) {
 <template>
     <svg :view-box="stage.elements.viewBox" :xmlns="stage.elements.xmlns" :data-id="stage.elements.id"
         :width="stage.elements.width" :height="stage.elements.height" @mousedown="mousedown">
+        <SvgChild/>
     </svg>
 </template>
+<style scoped>
+svg {
+    border: dashed 1px gray;
+}
+</style>

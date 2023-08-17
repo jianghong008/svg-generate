@@ -106,7 +106,7 @@ export class RectObject extends ElementObject {
     public rx = 0;
     @panelTitle('圆角Y')
     public ry = 0;
-    @panelTitle('特效组件')
+    @panelTitle('特效')
     public children = new StageObecjArray<StageObject>;
     constructor(x: number, y: number) {
         super();
@@ -121,6 +121,8 @@ export class RectObject extends ElementObject {
 export class CircleObject extends ElementObject {
     @panelTitle('半径')
     public r = 40;
+    @panelTitle('特效')
+    public children = new StageObecjArray<StageObject>;
     constructor(cx: number, cy: number) {
         super();
         this.x = cx;
@@ -136,6 +138,8 @@ export class EllipseObject extends ElementObject {
     public rx = 40;
     @panelTitle('半径Y')
     public ry = 30;
+    @panelTitle('特效')
+    public children = new StageObecjArray<StageObject>;
     constructor(cx: number, cy: number) {
         super();
         this.x = cx;
@@ -167,6 +171,8 @@ export class TextObject extends ElementObject {
 export class PathObject extends ElementObject {
     @panelTitle('闭合路径')
     public closed: boolean = false;
+    @panelTitle('特效')
+    public children = new StageObecjArray<StageObject>;
     constructor(startX: number, startY: number) {
         super();
         this.x = startX;
@@ -254,6 +260,8 @@ export class PathObject extends ElementObject {
  * 组合器
  */
 export class GroupObject extends ElementObject {
+    @panelTitle('特效')
+    public children = new StageObecjArray<StageObject>;
     constructor() {
         super();
         this.name = 'group';
@@ -270,6 +278,8 @@ export class UseObject extends ElementObject {
     public width = 100;
     @panelTitle('高度')
     public height = 60;
+    @panelTitle('特效')
+    public children = new StageObecjArray<StageObject>;
     constructor(x: number, y: number) {
         super();
         this.x = x;

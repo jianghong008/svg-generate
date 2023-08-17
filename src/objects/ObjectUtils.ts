@@ -132,7 +132,7 @@ export class AnimateAttribute {
         return this._val;
     }
 
-    public static GetAttributs(so?: StageObject) {
+    public static GetAttributs(so?: StageObject|null) {
         if(!so){
             return []
         }

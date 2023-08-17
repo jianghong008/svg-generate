@@ -61,7 +61,7 @@ export class StageObject {
     public path: PathDrawItem[] = [];
     public closed: boolean = false;
     public transform: TransformObject = new TransformObject();
-    public parent:StageObject|null = null
+    public parent: StageObject | null = null
     constructor() {
         this.id = this.createID();
     }
@@ -127,16 +127,41 @@ export class AnimateObject extends StageObject {
     @panelTitle('变换属性')
     public attributeName: AnimateAttribute = new AnimateAttribute('x');
     @panelTitle('变换次数')
-    public repeatCount: number|string = 'indefinite';
+    public repeatCount: number | string = 'indefinite';
     @panelTitle('时长/s')
     public duration: number = 1;
-    public values: string[] = [];
-    public keyTimes: string[] = [];
-    public timeLine = new Map<string,string>();
+
+    public timeLine = new Map<string, string>();
     constructor() {
         super();
         this.hasChildren = false;
         this.name = '通用动画';
+    }
+
+    public get keyTimes() {
+        let ar: number[] = [];
+        for (const k of this.timeLine.keys()) {
+            ar.push(Number(k));
+        }
+
+        for (let i = 0; i < ar.length; i++) {
+            ar[i] = (ar[i]) / 10;
+        }
+        ar = ar.sort();
+        return ar.join(';')
+    }
+
+    public get values() {
+        const ar: string[] = [];
+        const keys = this.keyTimes.split(';')
+        for (const k of keys) {
+            const tk = Number(k) * 10;
+            const val = this.timeLine.get(String(tk));
+            if (val !== undefined) {
+                ar.push(val);
+            }
+        }
+        return ar.join(';')
     }
 }
 

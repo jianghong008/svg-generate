@@ -6,6 +6,7 @@ const { currentObject } = useStage();
 const MaxTime = 101;
 const curVal = ref('');
 const curIndex = ref(-1);
+const unit = '%';
 const hasValue = (t: number) => {
     const animate = currentObject.element as AnimateObject
     if (!animate) {
@@ -68,12 +69,13 @@ const setVal = () => {
     animate.timeLine.set(st, curVal.value);
     curIndex.value = -1;
 }
+
 </script>
 <template>
     <div class="box">
         <div class="time-line-box" v-if="(currentObject.element instanceof AnimateObject)">
             <template v-for="t in MaxTime" :key="t">
-                <div class="main-time" :data-time="((t - 1) / 10) + 's'" v-if="(t - 1) % 10 == 0 || (t - 1) == 0"
+                <div class="main-time" :data-time="(t - 1) + unit" v-if="(t - 1) % 10 == 0 || (t - 1) == 0"
                     v-show="t - 1 <= 100"
                     :class="{ 'has-val': hasValue((t - 1) / 10).has, 'cur-val': curIndex == t && hasValue((t - 1) / 10).has }"
                     :title="hasValue((t - 1) / 10).val" @mousedown.self="showInput($event, t)">
@@ -82,7 +84,7 @@ const setVal = () => {
                         <span @click.stop="setVal">确定</span>
                     </div>
                 </div>
-                <div :data-time="(t - 1) / 10" v-else v-show="t - 1 <= 100"
+                <div :data-time="t - 1" v-else v-show="t - 1 <= 100"
                     :class="{ 'has-val': hasValue((t - 1) / 10).has, 'cur-val': curIndex == t && hasValue((t - 1) / 10).has }"
                     :title="hasValue((t - 1) / 10).val" @mousedown.self="showInput($event, t)">
                     <div class="input" v-show="curIndex == t">

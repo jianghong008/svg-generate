@@ -28,8 +28,28 @@ function setValue(key: string, input: EventTarget | null, isString = false) {
     if ((input as any).type === 'checkbox') {
         Reflect.set(currentObject.element, key, (input as any).checked as boolean)
     } else {
-        Reflect.set(currentObject.element, key, val)
+        const old = Reflect.get(currentObject.element,key)
+        if(typeof old==='object'&& old !== undefined && old !== null){
+            setObjectVal(key,val);
+        }else{
+            Reflect.set(currentObject.element, key, val);
+        }
     }
+}
+// 特殊类型
+function setObjectVal(key:string, val:string){
+    if (!currentObject.element) {
+        return
+    }
+    const old = Reflect.get(currentObject.element,key);
+    if(old === undefined || old === null){
+        return
+    }
+    if(old instanceof AnimateAttribute){
+        //动画属性
+        Reflect.set(currentObject.element, key, new AnimateAttribute(val));
+    }
+    
 }
 const propertys = computed(() => {
     if (!currentObject.element) {
@@ -63,7 +83,7 @@ const chooseEffect = (id: StageObject) => {
     <div class="right">
         <h3>属性</h3>
         <div class="right-plane" v-if="currentObject.element">
-            <h3>{{ currentObject.element.name }}</h3>
+            <h4>{{ currentObject.element.name }}</h4>
             <div v-for="k in propertys" class="right-plane-item" :key="k">
                 <template v-if="typeof k === 'string' && getValue('_' + k)">
                     <span>{{ getValue('_' + k) }}</span>
@@ -94,7 +114,7 @@ const chooseEffect = (id: StageObject) => {
                             <button @click="addEffect(k)">添加</button>
                         </div>
                     </div>
-                    <select v-else-if="(getValue(k) instanceof AnimateAttribute)">
+                    <select v-else-if="(getValue(k) instanceof AnimateAttribute)" :value="getValue(k)" @change="setValue(k, $event.target,true)">
                         <option v-for="e in AnimateAttribute.GetAttributs(currentObject.element?.parent)" :key="e" :value="e">
                             {{ e }}
                         </option>
