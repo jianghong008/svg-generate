@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import {
     CircleObject,
     ElementObject,
@@ -13,11 +13,13 @@ import { StageObject, SvgObject } from '@/objects/StageObject';
 type StageObjectType = {
     element: null | StageObject,
     last: null | StageObject,
-    effect: null | StageObject
+    effect: null | StageObject,
+    elements:StageObject[],
 }
 
 export const useStage = defineStore('stage', () => {
-    const RootTageObject = new SvgObject()
+    const RootTageObject = new SvgObject();
+    const RootDom = ref<HTMLElement>()
     const elements = reactive(RootTageObject);
     const mouse = reactive({
         down: false,
@@ -26,13 +28,28 @@ export const useStage = defineStore('stage', () => {
         drawing: false,
         x: 0,
         y: 0,
+        multiple:false,
+        multipleRect:{
+            x:0,
+            y:0,
+            w:0,
+            h:0
+        }
     })
     const currentObject = reactive<StageObjectType>({
         element: null,
         last: null,
         effect: null,
+        elements:[],
+    })
+    const menus = reactive({
+        show: false,
+        x: 0,
+        y: 0,
+        arg: Object as any,
     })
     const chooseElement = (id?: string | StageObject) => {
+        currentObject.elements = [];
         if (id && id instanceof StageObject) {
             currentObject.last = currentObject.element;
             currentObject.element = id;
@@ -57,6 +74,16 @@ export const useStage = defineStore('stage', () => {
             }
         })
     }
+    const chooseAllElement = ()=>{
+        const rect = mouse.multipleRect;
+        currentObject.elements = [];
+        elements.children.forEach(el => {
+            if (el.x>=rect.x&& el.y>rect.y && el.x<rect.x+rect.w&&el.y<rect.h+rect.y) {
+                currentObject.elements.push(el);
+                return;
+            }
+        })
+    }
     const moveElement = (x: number, y: number) => {
         if (!currentObject.element) {
             return
@@ -77,6 +104,18 @@ export const useStage = defineStore('stage', () => {
             if (el.id === currentObject.element?.id) {
                 el.initX = el.x;
                 el.initY = el.y;
+                return;
+            }
+        })
+    }
+    const removeElement = (id?: string | StageObject) => {
+        if (id && id instanceof StageObject) {
+            return
+        }
+        elements.children.forEach((el, i) => {
+            if (el.id === currentObject.element?.id) {
+                elements.children.splice(i, 1);
+                chooseElement();
                 return;
             }
         })
@@ -138,10 +177,14 @@ export const useStage = defineStore('stage', () => {
         elements,
         mouse,
         currentObject,
+        menus,
+        RootDom,
         chooseElement,
         moveElement,
         endDraw,
         addElement,
         stopMoveElement,
+        removeElement,
+        chooseAllElement,
     }
 })

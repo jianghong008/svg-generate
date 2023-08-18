@@ -8,8 +8,8 @@
  */
 
 import { SvgColor } from "./Color";
-import { FilterObject, StageObecjArray, UseObjectValue, panelTitle } from "./ObjectUtils";
-import { StageObject } from "./StageObject";
+import { FilterObject, StageObecjArray, UseObjectValue, panelTitle,TransformObject } from "./ObjectUtils";
+import { StageObject, } from "./StageObject";
 export enum FillRule {
     NONZERO = 'nonzero',
     EVENODD = 'evenodd'
@@ -32,10 +32,7 @@ export enum PathDrawMethod {
 }
 export interface PathDrawItem {
     method: PathDrawMethod,
-    point: {
-        x: number,
-        y: number
-    }[]
+    point: PathPoint[]
 }
 
 /**
@@ -80,7 +77,7 @@ export class ElementObject extends StageObject {
 
         }
 
-        return s + (this.closed?' Z':'');
+        return s + (this.closed ? ' Z' : '');
     }
 
     closePath() {
@@ -108,6 +105,9 @@ export class RectObject extends ElementObject {
     public ry = 0;
     @panelTitle('特效')
     public children = new StageObecjArray<StageObject>;
+    @panelTitle('变换')
+    public transform: TransformObject = new TransformObject();
+    
     constructor(x: number, y: number) {
         super();
         this.x = x;
@@ -288,4 +288,10 @@ export class UseObject extends ElementObject {
         this.initY = y;
         this.name = 'use';
     }
+}
+
+export class LinkObject extends ElementObject {
+    public name = '超链接';
+    @panelTitle('链接')
+    public href: string = ''
 }

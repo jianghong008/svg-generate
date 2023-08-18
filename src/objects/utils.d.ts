@@ -11,3 +11,8 @@ interface AnimateAttributeObjectItem {
     title:string,
     key:string
 }
+
+interface PathPoint {
+    x: number,
+    y: number
+}

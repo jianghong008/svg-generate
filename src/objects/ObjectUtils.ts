@@ -1,3 +1,4 @@
+import { PathDrawItem, PathDrawMethod } from "./ElementObject";
 import { StageObject } from "./StageObject";
 
 export enum FillRule {
@@ -132,8 +133,8 @@ export class AnimateAttribute {
         return this._val;
     }
 
-    public static GetAttributs(so?: StageObject|null) {
-        if(!so){
+    public static GetAttributs(so?: StageObject | null) {
+        if (!so) {
             return []
         }
         const ar = Reflect.ownKeys(so);
@@ -147,29 +148,16 @@ export class AnimateAttribute {
     }
 }
 
-export class TransformObject {
-    public skewX = 0;
-    public skewY = 0;
-    public rotate = {
-        a: 0,
-        x: 0,
-        y: 0
+/**
+ * 创建新的路径点
+ * @param method 
+ * @param points 
+ * @returns 
+ */
+export const createPathDrawItem = (method: PathDrawMethod, points: PathPoint[]) => {
+    const point: PathDrawItem = {
+        method,
+        point: points
     }
-
-    public translate = {
-        x: 0,
-        y: 0
-    }
-    public scale = {
-        x: 1,
-        y: 1,
-    }
-
-    transformToString() {
-        const s = `rotate(${this.rotate.a},${this.rotate.x},${this.rotate.y}) 
-        translate(${this.translate.x},${this.translate.y}) 
-        scale(${this.scale.x},${this.scale.y}) 
-        skewX(${this.skewX}) skewY(${this.skewY})`
-        return s
-    }
+    return point
 }

@@ -8,8 +8,10 @@
  */
 export class SvgColor{
     private _color = '';
-    constructor(color:string){
-        this._color = color;
+    constructor(color?:string){
+        if(color){
+            this._color = color;
+        }       
     }
     
     toString(){

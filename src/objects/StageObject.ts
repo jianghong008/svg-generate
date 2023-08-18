@@ -1,5 +1,6 @@
+import { SvgColor } from "./Color";
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
-import { AnimateAttribute, EffctEnum, StageObecjArray, TransformObject, panelTitle } from "./ObjectUtils";
+import { AnimateAttribute, EffctEnum, StageObecjArray, panelTitle } from "./ObjectUtils";
 export class TransformType {
     private _val = 'rotate';
     constructor(val?: TransformTypeValue) {
@@ -60,7 +61,6 @@ export class StageObject {
     public hasChildren = true;
     public path: PathDrawItem[] = [];
     public closed: boolean = false;
-    public transform: TransformObject = new TransformObject();
     public parent: StageObject | null = null
     constructor() {
         this.id = this.createID();
@@ -105,6 +105,7 @@ export class SvgObject extends StageObject {
     public width: number = 500;
     @panelTitle('高度')
     public height: number = 500;
+    public defs: StageObject[] = [];
     constructor() {
         super();
         this.name = 'svg'
@@ -181,5 +182,90 @@ export class AnimateTransformObject extends StageObject {
         super();
         this.hasChildren = false;
         this.name = '变换动画';
+    }
+}
+/**
+ * 填充图案
+ */
+export class PatternObject extends StageObject {
+    @panelTitle('视图大小')
+    public viewBox: string = '0 0 500 500';
+    @panelTitle('宽度')
+    public width: number = 50;
+    @panelTitle('高度')
+    public height: number = 50;
+    public name = '填充图案';
+}
+/**
+ * 渐变颜色
+ */
+export class StopObject extends StageObject {
+    @panelTitle('偏移%')
+    public offset: number = 0;
+    @panelTitle('颜色')
+    public stopColor: SvgColor = new SvgColor('');
+}
+/**
+ * 径向渐变
+ */
+export class RadialGradient extends StageObject {
+    @panelTitle('终点X%')
+    public cx: number = 50;
+    @panelTitle('终点Y%')
+    public cy: number = 50;
+    @panelTitle('起点X%')
+    public fx: number = 50;
+    @panelTitle('起点Y%')
+    public fy: number = 50;
+    @panelTitle('半径')
+    public fr: number = 50;
+    public name = '径向渐变';
+}
+
+export class linearGradient extends StageObject {
+    public name = '线性渐变';
+}
+
+export class MotionPath extends StageObject {
+    public name = '动画路径';
+    @panelTitle('动画路径')
+    public href: string = ''
+}
+
+export class TransformValueObject extends StageObject {
+    @panelTitle('x')
+    public x: number = 0;
+    @panelTitle('y')
+    public y: number = 0;
+}
+export class TransformSkew extends TransformValueObject {
+    public name: string = '倾斜';
+}
+export class TransformRotate extends TransformValueObject {
+    public name: string = '旋转';
+    @panelTitle('角度')
+    public a: number = 0;
+}
+export class TransformTranslate extends TransformValueObject {
+    public name: string = '平移';
+}
+export class TransformScale extends TransformValueObject {
+    public name: string = '缩放';
+}
+/**
+ * 变换
+ */
+export class TransformObject {
+    public skew: TransformSkew = new TransformSkew();
+    public rotate = new TransformRotate();
+    public translate = new TransformTranslate();
+    public scale = new TransformScale();
+
+    transformToString() {
+        const s = `rotate(${this.rotate.a},${this.rotate.x},${this.rotate.y}) 
+        translate(${this.translate.x},${this.translate.y}) 
+        scale(${this.scale.x},${this.scale.y}) 
+        skewX(${this.skew.x}) skewY(${this.skew.y})`
+        return s
     }
 }

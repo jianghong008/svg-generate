@@ -4,7 +4,7 @@ import { useStage } from '@/store/stage';
 import { computed } from 'vue';
 import { EffctEnum, StageObecjArray,AnimateAttribute } from '@/objects/ObjectUtils'
 import { ElementObject } from '@/objects/ElementObject'
-import { StageObject } from '@/objects/StageObject';
+import { StageObject,TransformObject } from '@/objects/StageObject';
 const { currentObject, chooseElement } = useStage();
 function setColor(key: string, input: EventTarget | null) {
     if (!input) {
@@ -75,8 +75,12 @@ const addEffect = (key: string) => {
 
     currentObject.element.addChild(Number(input.value) as EffctEnum)
 }
-const chooseEffect = (id: StageObject) => {
+const chooseEffect = (id?: StageObject) => {
     chooseElement(id)
+}
+
+const getObjKeys = (obj:any)=>{
+    return Reflect.ownKeys(obj);
 }
 </script>
 <template>
@@ -95,6 +99,7 @@ const chooseEffect = (id: StageObject) => {
                         @change="setValue(k, $event.target, true)" :checked="getValue(k)">
                     <input v-else-if="(getValue(k) instanceof SvgColor)" type="color" @change="setColor(k, $event.target)"
                         :value="getValue(k)">
+                    <!-- 特效 -->
                     <div class="input-panel" v-else-if="(getValue(k) instanceof StageObecjArray)">
                         <details>
                             <summary>集合</summary>
@@ -114,11 +119,24 @@ const chooseEffect = (id: StageObject) => {
                             <button @click="addEffect(k)">添加</button>
                         </div>
                     </div>
+                    <!-- 动画属性 -->
                     <select v-else-if="(getValue(k) instanceof AnimateAttribute)" :value="getValue(k)" @change="setValue(k, $event.target,true)">
                         <option v-for="e in AnimateAttribute.GetAttributs(currentObject.element?.parent)" :key="e" :value="e">
                             {{ e }}
                         </option>
                     </select>
+                    <!-- 变换 -->
+                    <div class="input-panel" v-else-if="(getValue(k) instanceof TransformObject)">
+                        <details>
+                            <summary>集合</summary>
+                            <ul>
+                                <li v-for="key in getObjKeys(getValue(k))" :key="key"
+                                    v-show="(typeof key !== 'function')" @click="chooseEffect(getObjKeys(getValue(k)) as StageObject)">
+                                    {{ key }}
+                                </li>
+                            </ul>
+                        </details>
+                    </div>
                 </template>
             </div>
         </div>
@@ -133,7 +151,7 @@ const chooseEffect = (id: StageObject) => {
     padding: 0 1em;
 }
 
-.right-plane-item span {
+.right-plane-item {
     user-select: none;
 }
 
@@ -145,5 +163,12 @@ const chooseEffect = (id: StageObject) => {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    padding: 0.5rem 0;
+}
+
+.input-panel ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 </style>

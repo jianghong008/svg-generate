@@ -3,7 +3,7 @@ import { SvgObject } from '@/objects/StageObject';
 import { PathDrawMethod } from '@/objects/ElementObject'
 import { useStage } from '../store/stage'
 import { computed } from 'vue';
-const { currentObject } = useStage()
+const { currentObject, menus } = useStage()
 const data = {
     mouseDown: false,
     x: 0,
@@ -20,10 +20,25 @@ const canControle = computed(() => {
 
 function mousedown(e: MouseEvent, index: number) {
     e.preventDefault();
-    data.mouseDown = true;
-    data.x = e.x;
-    data.y = e.y;
-    data.pointIndex = index;
+    menus.arg = -1;
+    if (e.button == 0) {
+        data.mouseDown = true;
+        data.x = e.x;
+        data.y = e.y;
+        data.pointIndex = index;
+    } else if (e.button == 2 && currentObject.element) {
+        const el = currentObject.element;
+        if (!el || !el.path[data.pointIndex]) {
+            return
+        }
+        menus.show = true;
+        const x = el.path[index].point[0].x
+        const y = el.path[index].point[0].y
+        menus.x = currentObject.element.x + x;
+        menus.y = currentObject.element.y + y;
+        menus.arg = index;
+    }
+
 }
 window.onmouseup = () => {
     data.mouseDown = false;
