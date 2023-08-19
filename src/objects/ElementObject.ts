@@ -8,8 +8,8 @@
  */
 
 import { SvgColor } from "./Color";
-import { FilterObject, StageObecjArray, UseObjectValue, panelTitle,TransformObject } from "./ObjectUtils";
-import { StageObject, } from "./StageObject";
+import { FilterObject, StageObecjArray, UseObjectValue, panelTitle, } from "./ObjectUtils";
+import { StageObject, TransformObject } from "./StageObject";
 export enum FillRule {
     NONZERO = 'nonzero',
     EVENODD = 'evenodd'
@@ -17,11 +17,14 @@ export enum FillRule {
 export enum ElementObjectType {
     none,
     rect,
-    circle,
     path,
     ellipse,
     text,
     svg,
+    use,
+    group,
+    link,
+
 }
 export enum PathDrawMethod {
     M = 'M',
@@ -51,11 +54,13 @@ export class ElementObject extends StageObject {
     public strokeWidth: number = 1;
     @panelTitle('填充')
     public fill: SvgColor = new SvgColor('#000000');
-    @panelTitle('填充透明度')
+    @panelTitle('填充度')
     public fillOpacity: number = 1;
     public filter: string = FilterObject.none();
     public fillRule: FillRule = FillRule.NONZERO;
     public path: PathDrawItem[] = [];
+    @panelTitle('变换')
+    public transform: TransformObject = new TransformObject();
     pathToString() {
         let s = ''
         for (let index = 0; index < this.path.length; index++) {
@@ -105,9 +110,6 @@ export class RectObject extends ElementObject {
     public ry = 0;
     @panelTitle('特效')
     public children = new StageObecjArray<StageObject>;
-    @panelTitle('变换')
-    public transform: TransformObject = new TransformObject();
-    
     constructor(x: number, y: number) {
         super();
         this.x = x;
@@ -116,21 +118,6 @@ export class RectObject extends ElementObject {
         this.initY = y;
         this.type = ElementObjectType.rect;
         this.name = 'rect';
-    }
-}
-export class CircleObject extends ElementObject {
-    @panelTitle('半径')
-    public r = 40;
-    @panelTitle('特效')
-    public children = new StageObecjArray<StageObject>;
-    constructor(cx: number, cy: number) {
-        super();
-        this.x = cx;
-        this.y = cy;
-        this.initX = cx;
-        this.initY = cy;
-        this.type = ElementObjectType.circle;
-        this.name = 'circle';
     }
 }
 export class EllipseObject extends ElementObject {
@@ -265,6 +252,7 @@ export class GroupObject extends ElementObject {
     constructor() {
         super();
         this.name = 'group';
+        this.type = ElementObjectType.group;
     }
 }
 
@@ -280,18 +268,23 @@ export class UseObject extends ElementObject {
     public height = 60;
     @panelTitle('特效')
     public children = new StageObecjArray<StageObject>;
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, href?: UseObjectValue) {
         super();
         this.x = x;
         this.y = y;
         this.initX = x;
         this.initY = y;
-        this.name = 'use';
+        this.name = 'group';
+        this.type = ElementObjectType.use;
+        if (href !== undefined) {
+            this.href = href;
+        }
     }
 }
 
 export class LinkObject extends ElementObject {
     public name = '超链接';
     @panelTitle('链接')
-    public href: string = ''
+    public href: string = '';
+    public type: ElementObjectType = ElementObjectType.link;
 }

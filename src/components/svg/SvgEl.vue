@@ -2,7 +2,9 @@
 import { PathObject } from '@/objects/ElementObject';
 import { useStage } from '@/store/stage';
 import SvgChild from './SvgChild.vue';
+
 import { onMounted, ref } from 'vue';
+
 const stage = useStage()
 // svg按下
 function mousedown(e: MouseEvent) {
@@ -57,7 +59,10 @@ onMounted(() => {
 <template>
     <svg ref="svgDom" :view-box="stage.elements.viewBox" :xmlns="stage.elements.xmlns" :data-id="stage.elements.id"
         :width="stage.elements.width" :height="stage.elements.height" @mousedown="mousedown">
-        <SvgChild />
+        <defs>
+            <SvgChild :data="stage.elements.defs"/>
+        </defs>
+        <SvgChild :data="stage.elements.children"/>
     </svg>
 </template>
 <style scoped>

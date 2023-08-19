@@ -89,15 +89,19 @@ export class FilterObject {
         return `url(${val})`;
     }
 }
-
+/**
+ * 引用对象
+ */
 export class UseObjectValue {
     private _val = '';
-    constructor(color: string) {
-        this._val = color;
+    constructor(val: string) {
+        this._val = val;
     }
-
-    toString() {
+    public get value() {
         return this._val;
+    }
+    toString() {
+        return `#${this._val}`;
     }
 }
 export enum EffctEnum {

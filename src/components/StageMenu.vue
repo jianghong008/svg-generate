@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ElementObject, PathDrawMethod } from '@/objects/ElementObject';
+import { ElementObject, PathDrawMethod, UseObject } from '@/objects/ElementObject';
 import { SvgObject } from '@/objects/StageObject';
 import { useStage } from '@/store/stage'
 import { reactive, ref, watch } from 'vue';
-const { menus, currentObject, removeElement } = useStage()
+const { menus, currentObject, removeElement, groupObjects,ungroupObject } = useStage()
 const list = reactive([
     {
         title: '删除',
@@ -37,6 +37,7 @@ watch(menus, () => {
     if (currentObject.element instanceof ElementObject && !(currentObject.element instanceof SvgObject)) {
         list[0].active = true;
         list[0].show = true;
+
     }
     if (menus.arg !== -1 && typeof menus.arg === 'number') {
         const point = currentObject.element?.path[menus.arg];
@@ -52,14 +53,16 @@ watch(menus, () => {
             list[4].show = true;
         }
     }
+
     if (currentObject.elements.length > 1) {
         list[1].active = true;
         list[1].show = true;
-    } else if (currentObject.elements.length == 1) {
+    }
+    if ((currentObject.elements.length == 1 && currentObject.elements[0] instanceof UseObject) || currentObject.element instanceof UseObject) {
         list[2].active = true;
         list[2].show = true;
     }
-    
+   
 })
 function resetMenus() {
     for (const m of list) {
@@ -76,6 +79,12 @@ function menuAction(index: number) {
     if (index == 0) {
         //删除
         removeElement(currentObject.element?.id);
+    } else if (index == 1) {
+        //打组
+        groupObjects();
+    }else if (index == 2) {
+        //解组
+        ungroupObject(currentObject.element?.id);
     } else if (index == 3) {
         //转换点
         const point = currentObject.element?.path[menus.arg];

@@ -13,7 +13,14 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-
+*::-webkit-scrollbar{
+  width: 2px;
+  background: #d9d9d9;
+}
+*::-webkit-scrollbar-thumb{
+  width: 2px;
+  background: #868686;
+}
 a {
   font-weight: 500;
   color: #646cff;

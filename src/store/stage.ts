@@ -1,20 +1,22 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue';
 import {
-    CircleObject,
     ElementObject,
     ElementObjectType,
     EllipseObject,
+    GroupObject,
     PathObject,
     RectObject,
-    TextObject
+    TextObject,
+    UseObject
 } from '@/objects/ElementObject';
 import { StageObject, SvgObject } from '@/objects/StageObject';
+import { UseObjectValue } from '@/objects/ObjectUtils';
 type StageObjectType = {
     element: null | StageObject,
     last: null | StageObject,
     effect: null | StageObject,
-    elements:StageObject[],
+    elements: StageObject[],
 }
 
 export const useStage = defineStore('stage', () => {
@@ -24,23 +26,23 @@ export const useStage = defineStore('stage', () => {
     const mouse = reactive({
         down: false,
         curElType: 0,
-        elMouse: false,
+        arg: Object as any,
         drawing: false,
         x: 0,
         y: 0,
-        multiple:false,
-        multipleRect:{
-            x:0,
-            y:0,
-            w:0,
-            h:0
+        multiple: false,
+        multipleRect: {
+            x: 0,
+            y: 0,
+            w: 0,
+            h: 0
         }
     })
     const currentObject = reactive<StageObjectType>({
         element: null,
         last: null,
         effect: null,
-        elements:[],
+        elements: [],
     })
     const menus = reactive({
         show: false,
@@ -50,6 +52,7 @@ export const useStage = defineStore('stage', () => {
     })
     const chooseElement = (id?: string | StageObject) => {
         currentObject.elements = [];
+        mouse.arg = null;
         if (id && id instanceof StageObject) {
             currentObject.last = currentObject.element;
             currentObject.element = id;
@@ -74,14 +77,15 @@ export const useStage = defineStore('stage', () => {
             }
         })
     }
-    const chooseAllElement = ()=>{
+    const chooseAllElement = () => {
         const rect = mouse.multipleRect;
         currentObject.elements = [];
         elements.children.forEach(el => {
-            if (el.x>=rect.x&& el.y>rect.y && el.x<rect.x+rect.w&&el.y<rect.h+rect.y) {
+            if (el.x >= rect.x && el.y > rect.y && el.x < rect.x + rect.w && el.y < rect.h + rect.y && el.type !== ElementObjectType.group) {
                 currentObject.elements.push(el);
                 return;
             }
+
         })
     }
     const moveElement = (x: number, y: number) => {
@@ -96,6 +100,7 @@ export const useStage = defineStore('stage', () => {
             }
         })
     }
+    //停止移动元素
     const stopMoveElement = () => {
         if (!currentObject.element) {
             return
@@ -109,17 +114,32 @@ export const useStage = defineStore('stage', () => {
         })
     }
     const removeElement = (id?: string | StageObject) => {
-        if (id && id instanceof StageObject) {
+        if (!id) {
             return
         }
+
         elements.children.forEach((el, i) => {
-            if (el.id === currentObject.element?.id) {
+            if (el.id === id || el === id) {
                 elements.children.splice(i, 1);
                 chooseElement();
+
                 return;
             }
         })
     }
+    const removeDefs = (id?: string | StageObject) => {
+        if (!id) {
+            return
+        }
+
+        elements.defs.forEach((el, i) => {
+            if (el.id === id || el === id) {
+                elements.defs.splice(i, 1);
+                return;
+            }
+        })
+    }
+    //结束绘制
     const endDraw = () => {
         mouse.curElType = ElementObjectType.none;
         mouse.drawing = false;
@@ -127,6 +147,7 @@ export const useStage = defineStore('stage', () => {
             return
         }
     }
+    //添加元素
     const addElement = (x: number, y: number) => {
         if (mouse.curElType === ElementObjectType.none) {
             return
@@ -135,9 +156,6 @@ export const useStage = defineStore('stage', () => {
         switch (mouse.curElType) {
             case ElementObjectType.rect:
                 obj = new RectObject(x, y);
-                break;
-            case ElementObjectType.circle:
-                obj = new CircleObject(x, y);
                 break;
             case ElementObjectType.path:
                 obj = new PathObject(x, y);
@@ -149,6 +167,11 @@ export const useStage = defineStore('stage', () => {
             case ElementObjectType.text:
                 obj = new TextObject(x, y);
                 break;
+            case ElementObjectType.group:
+                obj = new UseObject(0, 0, new UseObjectValue(mouse.arg));
+                mouse.arg = null;
+                break;
+
         }
         if (!obj) {
             return
@@ -173,6 +196,58 @@ export const useStage = defineStore('stage', () => {
         }
 
     }
+    //打组对象
+    const groupObjects = () => {
+
+        if (currentObject.elements.length < 2) {
+            return
+        }
+        const group = new GroupObject();
+        group.name += elements.defs.length;
+        currentObject.elements.forEach((el) => {
+            group.children.push(el);
+            //删除舞台元素
+            removeElement(el);
+        })
+        currentObject.elements = [];
+        //转存
+        elements.defs.push(group);
+        //引用
+        const use = new UseObject(0, 0);
+        use.href = new UseObjectValue(group.id);
+        elements.children.push(use);
+    }
+    //解组
+    const ungroupObject = (id?: string) => {
+
+        if (!id) {
+            return
+        }
+        let gid = '';
+        //从舞台删除
+        elements.children.forEach((el, index) => {
+            if (el.id === id) {
+                gid = el.getValue('href').value;
+                gid && elements.children.splice(index, 1);
+                return
+            }
+        })
+        if (!gid) {
+            return
+        }
+        //从组中取出
+        elements.defs.forEach((el, index) => {
+            if (el.id === gid) {
+                el.children.forEach(gc => {
+                    elements.children.push(gc);
+                })
+                //删除引用
+                elements.defs.splice(index, 1);
+                return
+            }
+        })
+    }
+
     return {
         elements,
         mouse,
@@ -186,5 +261,8 @@ export const useStage = defineStore('stage', () => {
         stopMoveElement,
         removeElement,
         chooseAllElement,
+        groupObjects,
+        ungroupObject,
+        removeDefs,
     }
 })
