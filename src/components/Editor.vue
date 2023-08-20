@@ -3,7 +3,7 @@ import Tools from './Tools.vue'
 import Left from './Left.vue'
 import Right from './Right.vue'
 import Stage from './Stage.vue'
-import TimeLine from './TimeLine.vue'
+import Bottom from './Bottom.vue'
 </script>
 <template>
     <div class="editor">
@@ -11,7 +11,7 @@ import TimeLine from './TimeLine.vue'
         <Left class="left" />
         <Stage class="stage" />
         <Right class="right" />
-        <TimeLine class="time-line"/>
+        <Bottom class="bottom"/>
     </div>
 </template>
 <style scoped>
@@ -42,7 +42,7 @@ import TimeLine from './TimeLine.vue'
     grid-column: 2/6;
     width: 70vw;
 }
-.time-line{
+.bottom{
     grid-column: 2/6;
     grid-row: 16/18;
     height: 8rem;

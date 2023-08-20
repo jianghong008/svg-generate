@@ -1,22 +1,36 @@
-import { StageObecjArray, panelTitle } from "./ObjectUtils";
-import { StageObject } from "./StageObject";
-export class SvgColor{
-    private _color = '';
-    constructor(color?:string){
-        if(color){
-            this._color = color;
-        }       
+import { panelTitle } from "./ObjectUtils";
+import { StageObject, TransformObject } from "./StageObject";
+export const ColorList = [
+    {
+        title: '单色',
+        key: 'color',
+    }, {
+        title: '线性渐变',
+        key: 'linear',
+    }, {
+        title: '径向渐变',
+        key: 'radial',
     }
-    
-    toString(){
-        return this._color;
-    }
-}
+]
 /**
  * 颜色对象
  */
-export class  ColorObject extends StageObject {
+export class ColorObject extends StageObject {
+    public colorType = 'color';
+}
+export class SvgColor extends ColorObject {
+    private _color = '#000000';
+    public colorType = 'color'
+    constructor(color?: string) {
+        super()
+        if (color) {
+            this._color = color;
+        }
+    }
 
+    toString() {
+        return this._color;
+    }
 }
 /**
  * 填充图案
@@ -39,7 +53,7 @@ export class StopObject extends ColorObject {
     @panelTitle('颜色')
     public stopColor: SvgColor = new SvgColor('');
     @panelTitle('透明度')
-    public stopOpacity:number =1;
+    public stopOpacity: number = 1;
 }
 /**
  * 径向渐变
@@ -58,8 +72,14 @@ export class RadialGradient extends ColorObject {
     public name = '径向渐变';
 
     public children: StopObject[] = [];
+    public colorType = 'radial'
 }
 
-export class linearGradient extends ColorObject {
+export class LinearGradient extends ColorObject {
+    public colorType = 'linear'
     public name = '线性渐变';
+    public rotate: number = 0;
+    public get gradientTransform() {
+        return 'rotate(' + this.rotate + ')'
+    }
 }

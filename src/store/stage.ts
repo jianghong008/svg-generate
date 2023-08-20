@@ -17,6 +17,7 @@ type StageObjectType = {
     last: null | StageObject,
     effect: null | StageObject,
     elements: StageObject[],
+    child:null | StageObject,
 }
 
 export const useStage = defineStore('stage', () => {
@@ -38,11 +39,15 @@ export const useStage = defineStore('stage', () => {
             h: 0
         }
     })
+    /**
+     * 当前选择
+     */
     const currentObject = reactive<StageObjectType>({
         element: null,
         last: null,
         effect: null,
         elements: [],
+        child:null,
     })
     const menus = reactive({
         show: false,
@@ -52,6 +57,7 @@ export const useStage = defineStore('stage', () => {
     })
     const chooseElement = (id?: string | StageObject) => {
         currentObject.elements = [];
+        currentObject.child = null;
         mouse.arg = null;
         if (id && id instanceof StageObject) {
             currentObject.last = currentObject.element;
@@ -76,6 +82,10 @@ export const useStage = defineStore('stage', () => {
                 return;
             }
         })
+    }
+
+    const chooseChild = (el:StageObject)=>{
+        currentObject.child = el;
     }
     const chooseAllElement = () => {
         const rect = mouse.multipleRect;
@@ -264,5 +274,6 @@ export const useStage = defineStore('stage', () => {
         groupObjects,
         ungroupObject,
         removeDefs,
+        chooseChild,
     }
 })
