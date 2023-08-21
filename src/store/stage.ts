@@ -12,12 +12,13 @@ import {
 } from '@/objects/ElementObject';
 import { StageObject, SvgObject } from '@/objects/StageObject';
 import { UseObjectValue } from '@/objects/ObjectUtils';
+import { ColorObject, LinearGradient, SvgColor } from '@/objects/Color';
 type StageObjectType = {
     element: null | StageObject,
     last: null | StageObject,
     effect: null | StageObject,
     elements: StageObject[],
-    child:null | StageObject,
+    child: null | StageObject,
 }
 
 export const useStage = defineStore('stage', () => {
@@ -47,7 +48,7 @@ export const useStage = defineStore('stage', () => {
         last: null,
         effect: null,
         elements: [],
-        child:null,
+        child: null,
     })
     const menus = reactive({
         show: false,
@@ -84,7 +85,7 @@ export const useStage = defineStore('stage', () => {
         })
     }
 
-    const chooseChild = (el:StageObject)=>{
+    const chooseChild = (el: StageObject) => {
         currentObject.child = el;
     }
     const chooseAllElement = () => {
@@ -258,6 +259,50 @@ export const useStage = defineStore('stage', () => {
         })
     }
 
+    const addColorGradient = (color: ColorObject) => {
+        
+        //清除未引用
+        const ar: number[] = []
+        elements.defs.forEach((def, index) => {
+            if (def instanceof ColorObject && !(def instanceof SvgColor)) {
+                let has = false;
+                //未引用定义资源
+                elements.defs.forEach(el => {
+                    if (el instanceof ElementObject) {
+                        const fill = el.getValue('fill') as ColorObject;
+                        const stroke = el.getValue('stroke') as ColorObject;
+                        if (fill.id === def.id || stroke.id === def.id) {
+                            has = true;
+                            return
+                        }
+                    }
+                })
+                //未引用文档资源
+                elements.children.forEach(el => {
+                    if (el instanceof ElementObject) {
+                        const fill = el.getValue('fill') as ColorObject;
+                        const stroke = el.getValue('stroke') as ColorObject;
+                        if (fill.id === def.id || stroke.id === def.id) {
+                            has = true;
+                            return
+                        }
+                    }
+                })
+
+                if (!has) {
+                    ar.push(index)
+                }
+            }
+        })
+
+        ar.forEach(index => {
+            elements.defs.splice(index, 1);
+        })
+
+        elements.defs.push(color);
+
+    }
+
     return {
         elements,
         mouse,
@@ -275,5 +320,6 @@ export const useStage = defineStore('stage', () => {
         ungroupObject,
         removeDefs,
         chooseChild,
+        addColorGradient,
     }
 })

@@ -24,6 +24,8 @@ export enum ElementObjectType {
     use,
     group,
     link,
+    linearGradient,
+    radialGradient,
 
 }
 export enum PathDrawMethod {

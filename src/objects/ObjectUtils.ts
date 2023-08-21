@@ -132,7 +132,9 @@ export class AnimateAttribute {
     constructor(val: string) {
         this._val = val;
     }
-
+    get value(){
+        return this._val;
+    }
     toString() {
         return this._val;
     }

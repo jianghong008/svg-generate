@@ -9,8 +9,8 @@ defineProps<{
 }>()
 </script>
 <template>
-    <g :id="data.id" v-if="data.type == ElementObjectType.group" :stroke="data.getValue('stroke').toString()"
-        :stroke-width="data.getValue('strokeWidth')" :fill="data.getValue('fill').toString()"
+    <g :id="data.id" v-if="data.type == ElementObjectType.group" :stroke="data.getValue('stroke').value"
+        :stroke-width="data.getValue('strokeWidth')" :fill="data.getValue('fill').value"
         :fill-opacity="data.getValue('fillOpacity')">
         <SvgChild :data="data.children" />
     </g>

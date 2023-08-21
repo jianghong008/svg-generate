@@ -2,11 +2,11 @@
 import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
 import { computed } from 'vue';
-import { ColorObject,ColorList,RadialGradient,LinearGradient } from '@/objects/Color'
+import { ColorObject, ColorList, RadialGradient, LinearGradient } from '@/objects/Color'
 import { EffctEnum, StageObecjArray, AnimateAttribute } from '@/objects/ObjectUtils'
 import { ElementObject } from '@/objects/ElementObject'
 import { StageObject, TransformObject } from '@/objects/StageObject';
-const { currentObject, chooseElement,chooseChild, mouse } = useStage();
+const { currentObject, chooseElement, chooseChild, addColorGradient, mouse } = useStage();
 
 function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!input) {
@@ -85,27 +85,33 @@ const getObjKeys = (obj: any) => {
     })
     return ar;
 }
-const addColorObject = (key:string,color:string)=>{
-    if(!currentObject.element){
+const addColorObject = (key: string, color: string) => {
+    if (!currentObject.element) {
         return
     }
     const obj = Reflect.get(currentObject.element, key);
-    if(obj['colorType']===color){
+    if (obj['colorType'] === color) {
         currentObject.child = obj;
         return;
     }
     let newObj = null;
-    if(color==='color'){
+    if (color === 'color') {
         newObj = new SvgColor();
-    }else if(color==='linear'){
+    } else if (color === 'linear') {
         newObj = new LinearGradient();
-    }else if(color==='radial'){
+    } else if (color === 'radial') {
         newObj = new RadialGradient();
     }
-    if(newObj){
-        Reflect.set(currentObject.element,key,newObj);
+    if (newObj) {
+        Reflect.set(currentObject.element, key, newObj);
         currentObject.child = newObj;
+        addColorGradient(newObj);
     }
+
+}
+
+const chooseColorObject = (color: ColorObject) => {
+    currentObject.child = color;
 }
 </script>
 <template>
@@ -123,7 +129,7 @@ const addColorObject = (key:string,color:string)=>{
                             @change="setValue(k, $event.target, true)" :value="getValue(k)">
                         <input v-else-if="typeof getValue(k) === 'boolean'" type="checkbox"
                             @change="setValue(k, $event.target, true)" :checked="getValue(k)">
-                       
+
                         <!-- 特效 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof StageObecjArray)">
                             <details>
@@ -170,15 +176,19 @@ const addColorObject = (key:string,color:string)=>{
                             <details>
                                 <summary>集合</summary>
                                 <p>当前：</p>
-                                <div>
-                                    
-                                    <span v-if="(getValue(k) instanceof SvgColor)">单色</span>
-                                    <span v-else-if="(getValue(k) instanceof LinearGradient)">线性渐变</span>
-                                    <span v-else-if="(getValue(k) instanceof RadialGradient)">径向渐变</span>
+                                <div class="cur-color-block">
+                                    <span v-if="(getValue(k) instanceof SvgColor)"
+                                        :style="{ backgroundColor: getValue(k).value }"
+                                        @click.stop="chooseColorObject(getValue(k))"></span>
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" view-box="0,0,32,32" width="32"
+                                        height="32" @click.stop="chooseColorObject(getValue(k))">
+                                        <rect x="0" r="0" width="32" height="32" :fill="getValue(k).value"></rect>
+                                    </svg>
                                 </div>
                                 <p>可选：</p>
                                 <ul>
-                                    <li v-for="color in ColorList" :key="color.key" @click.stop="addColorObject(k,color.key)">
+                                    <li v-for="color in ColorList" :key="color.key"
+                                        @click.stop="addColorObject(k, color.key)">
                                         {{ color.title }}
                                     </li>
                                 </ul>
@@ -237,5 +247,16 @@ const addColorObject = (key:string,color:string)=>{
 .preview svg {
     width: 100%;
     aspect-ratio: 1/1;
+}
+
+.cur-color-block {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cur-color-block span,
+.cur-color-block svg {
+    width: 2rem;
+    height: 2rem;
 }
 </style>

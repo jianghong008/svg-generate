@@ -1,5 +1,5 @@
 import { panelTitle } from "./ObjectUtils";
-import { StageObject, TransformObject } from "./StageObject";
+import { StageObject } from "./StageObject";
 export const ColorList = [
     {
         title: '单色',
@@ -27,7 +27,12 @@ export class SvgColor extends ColorObject {
             this._color = color;
         }
     }
-
+    get value() {
+        return this._color;
+    }
+    set value(val: string) {
+        this._color = val;
+    }
     toString() {
         return this._color;
     }
@@ -43,6 +48,9 @@ export class PatternObject extends ColorObject {
     @panelTitle('高度')
     public height: number = 50;
     public name = '填充图案';
+    get value() {
+        return `url('#${this.id}')`;
+    }
 }
 /**
  * 渐变颜色
@@ -73,6 +81,10 @@ export class RadialGradient extends ColorObject {
 
     public children: StopObject[] = [];
     public colorType = 'radial'
+
+    get value() {
+        return `url('#${this.id}')`;
+    }
 }
 
 export class LinearGradient extends ColorObject {
@@ -81,5 +93,8 @@ export class LinearGradient extends ColorObject {
     public rotate: number = 0;
     public get gradientTransform() {
         return 'rotate(' + this.rotate + ')'
+    }
+    get value() {
+        return `url('#${this.id}')`;
     }
 }

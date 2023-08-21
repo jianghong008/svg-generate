@@ -8,6 +8,9 @@ export class TransformType {
         }
         this._val = val;
     }
+    get value(){
+        return this._val;
+    }
     toString() {
         return this._val;
     }
@@ -73,7 +76,7 @@ export class StageObject {
         }
         return str + '_' + Date.now() + '_' + Math.round(Math.random() * 10000);
     }
-
+    /**获取指定属性 */
     getValue(key: string) {
         return Reflect.get(this, key);
     }
@@ -196,6 +199,9 @@ export class TransformOriginObject extends StageObject {
     public x: number = 50;
     @panelTitle('y%')
     public y: number = 50;
+    get value(){
+        return this.toString();
+    }
     toString(): string {
         return this.x + '% ' + this.y+'%'
     }
