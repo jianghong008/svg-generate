@@ -26,7 +26,7 @@ export enum ElementObjectType {
     link,
     linearGradient,
     radialGradient,
-
+    filter,
 }
 export enum PathDrawMethod {
     M = 'M',
@@ -110,7 +110,7 @@ export class RectObject extends ElementObject {
     public rx = 0;
     @panelTitle('圆角Y')
     public ry = 0;
-    @panelTitle('特效')
+    @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
     constructor(x: number, y: number) {
         super();
@@ -127,7 +127,7 @@ export class EllipseObject extends ElementObject {
     public rx = 40;
     @panelTitle('半径Y')
     public ry = 30;
-    @panelTitle('特效')
+    @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
     constructor(cx: number, cy: number) {
         super();
@@ -160,7 +160,7 @@ export class TextObject extends ElementObject {
 export class PathObject extends ElementObject {
     @panelTitle('闭合路径')
     public closed: boolean = false;
-    @panelTitle('特效')
+    @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
     constructor(startX: number, startY: number) {
         super();
@@ -249,7 +249,7 @@ export class PathObject extends ElementObject {
  * 组合器
  */
 export class GroupObject extends ElementObject {
-    @panelTitle('特效')
+    @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
     constructor() {
         super();
@@ -268,7 +268,7 @@ export class UseObject extends ElementObject {
     public width = 100;
     @panelTitle('高度')
     public height = 60;
-    @panelTitle('特效')
+    @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
     constructor(x: number, y: number, href?: UseObjectValue) {
         super();

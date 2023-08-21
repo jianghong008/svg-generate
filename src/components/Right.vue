@@ -3,9 +3,11 @@ import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
 import { computed } from 'vue';
 import { ColorObject, ColorList, RadialGradient, LinearGradient } from '@/objects/Color'
-import { EffctEnum, StageObecjArray, AnimateAttribute } from '@/objects/ObjectUtils'
+import { EffctEnum, StageObecjArray, AnimateAttribute,MultipleValueObject } from '@/objects/ObjectUtils'
 import { ElementObject } from '@/objects/ElementObject'
 import { StageObject, TransformObject } from '@/objects/StageObject';
+import InputGroup from './form/InputGroup.vue'
+
 const { currentObject, chooseElement, chooseChild, addColorGradient, mouse } = useStage();
 
 function setValue(key: string, input: EventTarget | null, isString = false) {
@@ -85,6 +87,7 @@ const getObjKeys = (obj: any) => {
     })
     return ar;
 }
+
 const addColorObject = (key: string, color: string) => {
     if (!currentObject.element) {
         return
@@ -130,7 +133,7 @@ const chooseColorObject = (color: ColorObject) => {
                         <input v-else-if="typeof getValue(k) === 'boolean'" type="checkbox"
                             @change="setValue(k, $event.target, true)" :checked="getValue(k)">
 
-                        <!-- 特效 -->
+                        <!-- 动画 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof StageObecjArray)">
                             <details>
                                 <summary>集合</summary>
@@ -190,6 +193,19 @@ const chooseColorObject = (color: ColorObject) => {
                                     <li v-for="color in ColorList" :key="color.key"
                                         @click.stop="addColorObject(k, color.key)">
                                         {{ color.title }}
+                                    </li>
+                                </ul>
+                            </details>
+                        </div>
+                        <!-- 多值设置 -->
+                        <div class="input-panel" v-else-if="(getValue(k) instanceof MultipleValueObject)">
+                            <details>
+                                <summary>集合</summary>
+                                <!-- <InputGroup :data="getValue(k)."/> -->
+                                <ul>
+                                    <li v-for="key in getObjKeys(getValue(k))" :key="key"
+                                        v-show="(typeof key !== 'function')" @click="chooseEffect(getValue(k)[key])">
+                                        {{ getValue(k)[key].name }}
                                     </li>
                                 </ul>
                             </details>

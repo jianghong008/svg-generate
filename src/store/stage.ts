@@ -12,7 +12,7 @@ import {
 } from '@/objects/ElementObject';
 import { StageObject, SvgObject } from '@/objects/StageObject';
 import { UseObjectValue } from '@/objects/ObjectUtils';
-import { ColorObject, LinearGradient, SvgColor } from '@/objects/Color';
+import { ColorObject, SvgColor } from '@/objects/Color';
 type StageObjectType = {
     element: null | StageObject,
     last: null | StageObject,

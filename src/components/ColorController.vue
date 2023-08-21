@@ -81,13 +81,14 @@ function setColorVal(e: { cssColor: string }) {
 </script>
 <template>
     <div class="color" v-if="(currentObject.child instanceof ColorObject)">
-        <div ref="colorBlock" class="color-block" @click.self="addColor">
+        <div v-show="!(currentObject.child instanceof SvgColor)" ref="colorBlock" class="color-block"
+            @click.self="addColor">
             <span v-for="(s, i ) in currentObject.child.children" :key="i"
                 :style="{ left: s.getValue('offset') + '%', backgroundColor: s.getValue('stopColor') }"
                 @mousedown.stop="setColor($event, i)">
             </span>
         </div>
-        <div class="simple-color">
+        <div v-show="(currentObject.child instanceof SvgColor)" class="simple-color">
             <span :style="{ backgroundColor: currentObject.child.getValue('value') }" @click="showColor = true"></span>
         </div>
         <div class="color-picker" v-show="showColor">

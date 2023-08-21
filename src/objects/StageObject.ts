@@ -1,53 +1,5 @@
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
-import { AnimateAttribute, EffctEnum, StageObecjArray, panelTitle } from "./ObjectUtils";
-export class TransformType {
-    private _val = 'rotate';
-    constructor(val?: TransformTypeValue) {
-        if (!val || !this.ArgsCount) {
-            throw Error('不存在变换类型:' + val);
-        }
-        this._val = val;
-    }
-    get value(){
-        return this._val;
-    }
-    toString() {
-        return this._val;
-    }
-    get ArgsCount(): TransformTypeArg {
-        const en = this.getEnum();
-        return Reflect.get(en, this._val);
-    }
-    getEnum() {
-        return {
-            rotate: {
-                value: 'rotate',
-                args: 2,
-                type: 'number'
-            },
-            translate: {
-                value: 'translate',
-                args: 2,
-                type: 'number'
-            },
-            scale: {
-                value: 'scale',
-                args: 2,
-                type: 'number'
-            },
-            skewY: {
-                value: 'scale',
-                args: 1,
-                type: 'number'
-            },
-            skewX: {
-                value: 'skewX',
-                args: 1,
-                type: 'number'
-            },
-        }
-    }
-}
+import { AnimateAttribute, EffctEnum, FilterObject, MultipleValueObject, StageObecjArray, TransformType, panelTitle } from "./ObjectUtils";
 /**
  * 舞台组件
  */
@@ -64,7 +16,8 @@ export class StageObject {
     public path: PathDrawItem[] = [];
     public closed: boolean = false;
     public parent: StageObject | null = null
-    public transform:any;
+    public transform: any;
+    public filters: FilterObject[] = [];
     constructor() {
         this.id = this.createID();
     }
@@ -180,18 +133,30 @@ export class AnimateMotionObject extends StageObject {
 export class AnimateTransformObject extends StageObject {
     public attributeName: string = 'transform';
     public attributeType: string = 'XML';
-    public transformType: TransformType = new TransformType();
+    @panelTitle('变换类型')
+    public transformType: TransformType = new TransformType('');
+    @panelTitle('起始状态')
+    public from: MultipleValueObject = new MultipleValueObject([]);
+    @panelTitle('结束状态')
+    public to: MultipleValueObject = new MultipleValueObject([]);
+    @panelTitle('循环次数')
+    public repeatCount: number | string = 'indefinite';
+    @panelTitle('持续时间/s')
+    public duration: number = 5;
     constructor() {
         super();
         this.hasChildren = false;
         this.name = '变换动画';
+    }
+    get vlas() {
+        return this.transformType.vals;
     }
 }
 
 export class MotionPath extends StageObject {
     public name = '动画路径';
     @panelTitle('动画路径')
-    public href: string = ''
+    public href: string = '';
 }
 export class TransformOriginObject extends StageObject {
     public name = '变换原点';
@@ -199,11 +164,11 @@ export class TransformOriginObject extends StageObject {
     public x: number = 50;
     @panelTitle('y%')
     public y: number = 50;
-    get value(){
+    get value() {
         return this.toString();
     }
     toString(): string {
-        return this.x + '% ' + this.y+'%'
+        return this.x + '% ' + this.y + '%'
     }
 }
 export class TransformValueObject extends StageObject {
@@ -247,7 +212,6 @@ export class TransformScale extends TransformValueObject {
  * 变换
  */
 export class TransformObject extends StageObject {
-    @panelTitle('角度')
     public skew: TransformSkew = new TransformSkew();
     public rotate = new TransformRotate();
     public translate = new TransformTranslate();

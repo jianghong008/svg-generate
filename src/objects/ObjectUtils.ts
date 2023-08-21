@@ -98,7 +98,7 @@ export class UseObjectValue {
         this._val = val;
     }
     public get value() {
-        return this._val;
+        return this.toString();
     }
     toString() {
         return `#${this._val}`;
@@ -118,7 +118,7 @@ export const EffctEnumObjects = [
         key: EffctEnum.animateMotion
     },
     {
-        title: '滤镜',
+        title: '变换动画',
         key: EffctEnum.filter
     }
 ]
@@ -132,7 +132,7 @@ export class AnimateAttribute {
     constructor(val: string) {
         this._val = val;
     }
-    get value(){
+    get value() {
         return this._val;
     }
     toString() {
@@ -166,4 +166,106 @@ export const createPathDrawItem = (method: PathDrawMethod, points: PathPoint[]) 
         point: points
     }
     return point
+}
+
+export const TransformEnums: InputFormGroup[] = [
+    {
+        title: "旋转",
+        key: "rotate",
+        args: [
+            {
+                type: 'number',
+                title: 'x'
+            },
+            {
+                type: 'number',
+                title: 'y'
+            }
+        ]
+    },
+    {
+        title: "位移",
+        key: "translate",
+        args: [
+            {
+                type: 'number',
+                title: 'x'
+            },
+            {
+                type: 'number',
+                title: 'y'
+            }
+        ]
+    },
+    {
+        title: "缩放",
+        key: "scale",
+        args: [
+            {
+                type: 'number',
+                title: 'x'
+            },
+            {
+                type: 'number',
+                title: 'y'
+            }
+        ]
+    },
+    {
+        title: "倾斜Y",
+        key: "skewY",
+        args: [
+            {
+                type: 'number',
+                title: 'y'
+            },
+        ]
+    },
+    {
+        title: "倾斜X",
+        key: "skewX",
+        args: [
+            {
+                type: 'number',
+                title: 'x'
+            },
+        ]
+    }
+]
+
+export class TransformType {
+    private _val = '';
+    constructor(val: string) {
+        this._val = val;
+    }
+    get value() {
+        return this._val;
+    }
+    get enums() {
+        return TransformEnums
+    }
+    get vals(){
+        for(const e of this.enums){
+            if(e.key === this._val){
+                return e.args;
+            }
+        }
+        return [];
+    }
+}
+/**
+ * 多值对象
+ */
+export class MultipleValueObject {
+    public vals: InputFormItem[] = [];
+    constructor(vals: InputFormItem[]) {
+        this.vals = vals;
+    }
+    private _val = '';
+    get value() {
+        return this._val;
+    }
+    set value(val: string) {
+        this._val = val;
+    }
 }
