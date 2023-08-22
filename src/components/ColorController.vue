@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStage } from '@/store/stage';
 import { ColorObject, StopObject, SvgColor } from '@/objects/Color'
-import { computed, ref } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { ColorPicker } from 'vue-accessible-color-picker'
 import { StageObject } from '@/objects/StageObject';
 const { currentObject } = useStage();
@@ -47,17 +47,21 @@ function addColor(e: MouseEvent) {
         }
     }
 }
+const mouse = reactive({
+    down: false,
+    move: false,
+    x: 0,
+    y: 0,
+})
 function setColor(e: MouseEvent, index: number) {
     if (e.button === 0) {
-        showColor.value = true
         colorIndex.value = index;
+        mouse.down = true;
     } else if (e.button === 2) {
         //删除
         colorIndex.value = -1;
         currentObject.child?.children.splice(index, 1);
-
     }
-
 }
 function setColorVal(e: { cssColor: string }) {
 
@@ -78,20 +82,48 @@ function setColorVal(e: { cssColor: string }) {
     Reflect.set(stop, 'stopColor', new SvgColor(val));
 
 }
+const picker = ref<HTMLDivElement>();
+let clolorTimer:any = null
+function pickColor(e: MouseEvent) {
+    
+    showColor.value = true;
+    mouse.down = false;
+    clearTimeout(clolorTimer);
+    mouse.x = 0;
+    clolorTimer = setTimeout(() => {
+        if (!picker.value) {
+        return
+    }
+        const rect = picker.value.getBoundingClientRect();
+        if (rect.width + e.screenX > window.innerWidth) {
+            mouse.x = window.innerWidth - rect.width;
+        } else {
+            mouse.x = e.screenX;
+        }
+
+        if (rect.height + e.screenY > window.innerHeight) {
+            mouse.y = window.innerHeight - rect.height;
+        } else {
+            mouse.y = e.screenY;
+        }
+    },100)
+
+}
+
 </script>
 <template>
     <div class="color" v-if="(currentObject.child instanceof ColorObject)">
         <div v-show="!(currentObject.child instanceof SvgColor)" ref="colorBlock" class="color-block"
-            @click.self="addColor">
+            :style="{ background: currentObject.child.getValue('cssColor') }" @click.self="addColor">
             <span v-for="(s, i ) in currentObject.child.children" :key="i"
                 :style="{ left: s.getValue('offset') + '%', backgroundColor: s.getValue('stopColor') }"
-                @mousedown.stop="setColor($event, i)">
+                @mousedown.stop="setColor($event, i)" @mouseup.stop="pickColor">
             </span>
         </div>
         <div v-show="(currentObject.child instanceof SvgColor)" class="simple-color">
-            <span :style="{ backgroundColor: currentObject.child.getValue('value') }" @click="showColor = true"></span>
+            <span :style="{ backgroundColor: currentObject.child.getValue('value') }" @mousedown.stop="pickColor"></span>
         </div>
-        <div class="color-picker" v-show="showColor">
+        <div ref="picker" class="color-picker" v-show="showColor" :style="{ left: mouse.x + 'px', top: mouse.y + 'px',opacity:mouse.x>0?1:0 }">
             <ColorPicker :color="curColor" @color-change="setColorVal" />
             <p>
                 <span class="btn" @click="showColor = false">确定</span>
@@ -104,17 +136,18 @@ function setColorVal(e: { cssColor: string }) {
     position: relative;
     height: 1rem;
     border: solid 1px gray;
-    overflow: hidden;
 }
 
 .color-block span {
     position: absolute;
     left: 0;
-    top: 0;
+    top: 50%;
     display: block;
-    width: 10%;
+    width: 0.5rem;
     height: 1rem;
     background: #000;
+    outline: solid 1px #fff;
+    transform: translateX(-25%);
 }
 
 .color-picker {
@@ -122,6 +155,8 @@ function setColorVal(e: { cssColor: string }) {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    background-color: #fff;
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn {

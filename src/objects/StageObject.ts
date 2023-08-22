@@ -40,13 +40,22 @@ export class StageObject {
         return ''
     }
     addChild(t: EffctEnum) {
+        let child:StageObject|null = null
         switch (t) {
             case EffctEnum.animate:
-                const child = new AnimateObject();
+                child = new AnimateObject();
                 child.name += this.children.length;
                 child.parent = this;
-                this.children.push(child);
+                
                 break
+            case EffctEnum.animateTransform:
+                child = new AnimateTransformObject();
+                child.name += this.children.length;
+                child.parent = this;
+                break
+        }
+        if(child){
+            this.children.push(child);
         }
     }
 }
@@ -148,7 +157,10 @@ export class AnimateTransformObject extends StageObject {
         this.hasChildren = false;
         this.name = '变换动画';
     }
-    get vlas() {
+    get from_vals() {
+        return this.transformType.vals;
+    }
+    get to_vals() {
         return this.transformType.vals;
     }
 }

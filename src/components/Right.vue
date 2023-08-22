@@ -73,7 +73,8 @@ const chooseEffect = (id?: StageObject) => {
     if (!id) {
         return
     }
-    chooseElement(id)
+    chooseElement(id);
+    
 }
 
 const getObjKeys = (obj: any) => {
@@ -201,13 +202,7 @@ const chooseColorObject = (color: ColorObject) => {
                         <div class="input-panel" v-else-if="(getValue(k) instanceof MultipleValueObject)">
                             <details>
                                 <summary>集合</summary>
-                                <!-- <InputGroup :data="getValue(k)."/> -->
-                                <ul>
-                                    <li v-for="key in getObjKeys(getValue(k))" :key="key"
-                                        v-show="(typeof key !== 'function')" @click="chooseEffect(getValue(k)[key])">
-                                        {{ getValue(k)[key].name }}
-                                    </li>
-                                </ul>
+                                <InputGroup :data="getValue(k+'_vals')"/>
                             </details>
                         </div>
                     </template>

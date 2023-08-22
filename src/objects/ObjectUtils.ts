@@ -105,7 +105,7 @@ export class UseObjectValue {
     }
 }
 export enum EffctEnum {
-    animate, animateMotion, filter
+    animate, animateMotion, animateTransform,
 }
 
 export const EffctEnumObjects = [
@@ -119,7 +119,7 @@ export const EffctEnumObjects = [
     },
     {
         title: '变换动画',
-        key: EffctEnum.filter
+        key: EffctEnum.animateTransform
     }
 ]
 

@@ -36,6 +36,9 @@ export class SvgColor extends ColorObject {
     toString() {
         return this._color;
     }
+    get cssColor(){
+        return this._color;
+    }
 }
 /**
  * 填充图案
@@ -85,6 +88,19 @@ export class RadialGradient extends ColorObject {
     get value() {
         return `url('#${this.id}')`;
     }
+    get cssColor() {
+        let s = ''
+        for (const c of this.children) {
+            const color = c as StopObject;
+            if (s == '') {
+                s += color.stopColor.value + ' ' + color.offset + '%';
+            } else {
+                s += ',' + color.stopColor.value + ' ' + color.offset + '%';
+            }
+
+        }
+        return 'linear-gradient(to right,' + s + ')'
+    }
 }
 
 export class LinearGradient extends ColorObject {
@@ -96,5 +112,18 @@ export class LinearGradient extends ColorObject {
     }
     get value() {
         return `url('#${this.id}')`;
+    }
+    get cssColor() {
+        let s = ''
+        for (const c of this.children) {
+            const color = c as StopObject;
+            if (s == '') {
+                s += color.stopColor.value + ' ' + color.offset + '%';
+            } else {
+                s += ',' + color.stopColor.value + ' ' + color.offset + '%';
+            }
+
+        }
+        return 'linear-gradient(to right,' + s + ')'
     }
 }
