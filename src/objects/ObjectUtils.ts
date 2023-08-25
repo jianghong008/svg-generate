@@ -175,11 +175,13 @@ export const TransformEnums: InputFormGroup[] = [
         args: [
             {
                 type: 'number',
-                title: 'x'
+                title: 'x',
+                val: 0
             },
             {
                 type: 'number',
-                title: 'y'
+                title: 'y',
+                val: 0
             }
         ]
     },
@@ -189,11 +191,13 @@ export const TransformEnums: InputFormGroup[] = [
         args: [
             {
                 type: 'number',
-                title: 'x'
+                title: 'x',
+                val: 0
             },
             {
                 type: 'number',
-                title: 'y'
+                title: 'y',
+                val: 0
             }
         ]
     },
@@ -203,11 +207,13 @@ export const TransformEnums: InputFormGroup[] = [
         args: [
             {
                 type: 'number',
-                title: 'x'
+                title: 'x',
+                val: 1
             },
             {
                 type: 'number',
-                title: 'y'
+                title: 'y',
+                val: 1
             }
         ]
     },
@@ -217,7 +223,8 @@ export const TransformEnums: InputFormGroup[] = [
         args: [
             {
                 type: 'number',
-                title: 'y'
+                title: 'y',
+                val: 0
             },
         ]
     },
@@ -227,7 +234,8 @@ export const TransformEnums: InputFormGroup[] = [
         args: [
             {
                 type: 'number',
-                title: 'x'
+                title: 'x',
+                val: 0
             },
         ]
     }
@@ -244,9 +252,9 @@ export class TransformType {
     get enums() {
         return TransformEnums
     }
-    get vals(){
-        for(const e of this.enums){
-            if(e.key === this._val){
+    get vals() {
+        for (const e of this.enums) {
+            if (e.key === this._val) {
                 return e.args;
             }
         }
@@ -261,11 +269,27 @@ export class MultipleValueObject {
     constructor(vals: InputFormItem[]) {
         this.vals = vals;
     }
-    private _val = '';
-    get value() {
-        return this._val;
+    setVal(key: string, val: any) {
+        for (const v of this.vals) {
+            if (v.title === key) {
+                v.val = val;
+            }
+        }
     }
-    set value(val: string) {
-        this._val = val;
+    getVal(key: string) {
+
+        for (const val of this.vals) {
+            if (val.title === key) {
+                return val.val
+            }
+        }
+        return null
     }
+}
+
+/**
+ * 多值对象组
+ */
+export class MultipleValueListObject {
+
 }

@@ -1,5 +1,5 @@
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
-import { AnimateAttribute, EffctEnum, FilterObject, MultipleValueObject, StageObecjArray, TransformType, panelTitle } from "./ObjectUtils";
+import { AnimateAttribute, EffctEnum, FilterObject, MultipleValueListObject, MultipleValueObject, StageObecjArray, TransformType, panelTitle } from "./ObjectUtils";
 /**
  * 舞台组件
  */
@@ -40,13 +40,13 @@ export class StageObject {
         return ''
     }
     addChild(t: EffctEnum) {
-        let child:StageObject|null = null
+        let child: StageObject | null = null
         switch (t) {
             case EffctEnum.animate:
                 child = new AnimateObject();
                 child.name += this.children.length;
                 child.parent = this;
-                
+
                 break
             case EffctEnum.animateTransform:
                 child = new AnimateTransformObject();
@@ -54,7 +54,7 @@ export class StageObject {
                 child.parent = this;
                 break
         }
-        if(child){
+        if (child) {
             this.children.push(child);
         }
     }
@@ -223,18 +223,101 @@ export class TransformScale extends TransformValueObject {
 /**
  * 变换
  */
-export class TransformObject extends StageObject {
-    public skew: TransformSkew = new TransformSkew();
-    public rotate = new TransformRotate();
-    public translate = new TransformTranslate();
-    public scale = new TransformScale();
-    public transformOrigin = new TransformOriginObject;
-    public name = '变换'
+export class TransformObject extends MultipleValueListObject {
+    public skew: MultipleValueObject = new MultipleValueObject([
+        {
+            title: 'x',
+            type: 'number',
+            val: 0
+        },
+        {
+            title: 'y',
+            type: 'number',
+            val: 0
+        }
+    ]);
+    public rotate = new MultipleValueObject([
+        {
+            title: 'a',
+            type: 'number',
+            val: 0
+        },
+        {
+            title: 'x',
+            type: 'number',
+            val: 0
+        },
+        {
+            title: 'y',
+            type: 'number',
+            val: 0
+        }
+    ]);
+    public translate = new MultipleValueObject([
+        {
+            title: 'x',
+            type: 'number',
+            val: 0
+        },
+        {
+            title: 'y',
+            type: 'number',
+            val: 0
+        }
+    ]);
+    public scale = new MultipleValueObject([
+        {
+            title: 'x',
+            type: 'number',
+            val: 1
+        },
+        {
+            title: 'y',
+            type: 'number',
+            val: 1
+        }
+    ]);
+    public transformOrigin = new MultipleValueObject([
+        {
+            title: 'x',
+            type: 'number',
+            val: 50
+        },
+        {
+            title: 'y',
+            type: 'number',
+            val: 50
+        }
+    ]);
+    public name = '变换';
+    public keys = [
+        {
+            title: '倾斜',
+            key: 'skew'
+        },
+        {
+            title: '旋转',
+            key: 'rotate'
+        },
+        {
+            title: '平移',
+            key: 'translate'
+        },
+        {
+            title: '缩放',
+            key: 'scale'
+        },
+        {
+            title: '基点',
+            key: 'transformOrigin'
+        }
+    ];
     transformToString() {
-        const s = `rotate(${this.rotate.a},${this.rotate.x},${this.rotate.y}) 
-        translate(${this.translate.x},${this.translate.y}) 
-        scale(${this.scale.x},${this.scale.y}) 
-        skewX(${this.skew.x}) skewY(${this.skew.y})`
+        const s = `rotate(${this.rotate.getVal('a')},${this.rotate.getVal('x')},${this.rotate.getVal('y')}) 
+        translate(${this.translate.getVal("x")},${this.translate.getVal("y")}) 
+        scale(${this.scale.getVal("x")},${this.scale.getVal('y')}) 
+        skewX(${this.skew.getVal("x")}) skewY(${this.skew.getVal("y")})`
         return s
     }
 }
+

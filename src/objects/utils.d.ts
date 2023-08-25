@@ -20,6 +20,7 @@ interface PathPoint {
 interface InputFormItem {
     type: 'number' | 'text' | 'color',
     title:string,
+    val:any
 }
 
 /**输入框组 */

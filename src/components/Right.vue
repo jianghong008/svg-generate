@@ -3,9 +3,9 @@ import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
 import { computed } from 'vue';
 import { ColorObject, ColorList, RadialGradient, LinearGradient } from '@/objects/Color'
-import { EffctEnum, StageObecjArray, AnimateAttribute,MultipleValueObject } from '@/objects/ObjectUtils'
+import { EffctEnum, StageObecjArray, AnimateAttribute,MultipleValueObject,MultipleValueListObject } from '@/objects/ObjectUtils'
 import { ElementObject } from '@/objects/ElementObject'
-import { StageObject, TransformObject } from '@/objects/StageObject';
+import { StageObject } from '@/objects/StageObject';
 import InputGroup from './form/InputGroup.vue'
 
 const { currentObject, chooseElement, chooseChild, addColorGradient, mouse } = useStage();
@@ -163,14 +163,14 @@ const chooseColorObject = (color: ColorObject) => {
                                 {{ e }}
                             </option>
                         </select>
-                        <!-- 变换 -->
-                        <div class="input-panel" v-else-if="(getValue(k) instanceof TransformObject)">
+                        <!-- 多值组 -->
+                        <div class="input-panel" v-else-if="(getValue(k) instanceof MultipleValueListObject)">
                             <details>
                                 <summary>集合</summary>
                                 <ul>
-                                    <li v-for="key in getObjKeys(getValue(k))" :key="key"
-                                        v-show="(typeof key !== 'function')" @click="chooseEffect(getValue(k)[key])">
-                                        {{ getValue(k)[key].name }}
+                                    <li v-for="item of getValue(k).keys" :key="item.key">
+                                        <span>{{ item.title }}</span>
+                                        <InputGroup :data="getValue(k)[item.key].vals"/>
                                     </li>
                                 </ul>
                             </details>
