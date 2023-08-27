@@ -3,7 +3,11 @@ import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
 import { computed } from 'vue';
 import { ColorObject, ColorList, RadialGradient, LinearGradient } from '@/objects/Color'
-import { EffctEnum, StageObecjArray, AnimateAttribute,MultipleValueObject,MultipleValueListObject } from '@/objects/ObjectUtils'
+import {
+    EffctEnum, StageObecjArray,
+    AnimateAttribute, MultipleValueObject,
+    MultipleValueListObject, SelectObject
+} from '@/objects/ObjectUtils'
 import { ElementObject } from '@/objects/ElementObject'
 import { StageObject } from '@/objects/StageObject';
 import InputGroup from './form/InputGroup.vue'
@@ -18,7 +22,10 @@ function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!currentObject.element) {
         return
     }
-
+    if(Reflect.get(currentObject.element,key) instanceof SelectObject){
+        Reflect.set(currentObject.element,'new_'+key,val)
+        return
+    }
     if ((input as any).type === 'checkbox') {
         Reflect.set(currentObject.element, key, (input as any).checked as boolean)
     } else {
@@ -49,7 +56,13 @@ const propertys = computed(() => {
     if (!currentObject.element) {
         return []
     }
-    return Reflect.ownKeys(currentObject.element)
+    const keys = Reflect.ownKeys(currentObject.element);
+    for (let i = 0; i < keys.length; i++) {
+        if (keys[i] === 'id' || typeof keys[i] !== 'string') {
+            keys.splice(i, 1);
+        }
+    }
+    return keys
 })
 const getValue = (key: string | symbol) => {
     if (!currentObject.element) {
@@ -67,26 +80,15 @@ const addEffect = (key: string) => {
         return
     }
 
-    currentObject.element.addChild(Number(input.value) as EffctEnum)
+    currentObject.element.addAnimate(Number(input.value) as EffctEnum)
 }
-const chooseEffect = (id?: StageObject) => {
-    if (!id) {
+const chooseEffect = (s?: StageObject) => {
+    if (!s) {
         return
     }
-    chooseElement(id);
-    
-}
 
-const getObjKeys = (obj: any) => {
-    const keys = Reflect.ownKeys(obj);
-
-    const ar: string[] = []
-    keys.forEach(k => {
-        if (typeof k === 'string' && Reflect.get(obj, k) instanceof StageObject) {
-            ar.push(k)
-        }
-    })
-    return ar;
+    chooseElement(s);
+    chooseChild(s);
 }
 
 const addColorObject = (key: string, color: string) => {
@@ -140,7 +142,7 @@ const chooseColorObject = (color: ColorObject) => {
                                 <summary>集合</summary>
                                 <ul>
                                     <li v-for="a in currentObject.element.children" :key="a.id"
-                                        v-show="!(a instanceof ElementObject)" @click="chooseChild(a)">
+                                        v-show="!(a instanceof ElementObject)" @click="chooseEffect(a)">
                                         {{ a.name }}
                                     </li>
                                 </ul>
@@ -156,11 +158,18 @@ const chooseColorObject = (color: ColorObject) => {
 
                         </div>
                         <!-- 动画属性 -->
-                        <select v-else-if="(getValue(k) instanceof AnimateAttribute)" :value="getValue(k)"
+                        <select v-else-if="(getValue(k) instanceof AnimateAttribute)" :value="getValue(k).value"
                             @change="setValue(k, $event.target, true)">
                             <option v-for="e in AnimateAttribute.GetAttributs(currentObject.element?.parent)" :key="e"
                                 :value="e">
                                 {{ e }}
+                            </option>
+                        </select>
+                        <!-- 下拉选项 -->
+                        <select v-else-if="(getValue(k) instanceof SelectObject)" :value="getValue(k).value"
+                            @change="setValue(k, $event.target, true)">
+                            <option v-for="e in getValue(k).vals" :key="e.value" :selected="getValue(k).value==e.value" :value="e.value">
+                                {{ e.title }}
                             </option>
                         </select>
                         <!-- 多值组 -->
@@ -170,7 +179,7 @@ const chooseColorObject = (color: ColorObject) => {
                                 <ul>
                                     <li v-for="item of getValue(k).keys" :key="item.key">
                                         <span>{{ item.title }}</span>
-                                        <InputGroup :data="getValue(k)[item.key].vals"/>
+                                        <InputGroup :data="getValue(k)[item.key].vals" />
                                     </li>
                                 </ul>
                             </details>
@@ -202,7 +211,7 @@ const chooseColorObject = (color: ColorObject) => {
                         <div class="input-panel" v-else-if="(getValue(k) instanceof MultipleValueObject)">
                             <details>
                                 <summary>集合</summary>
-                                <InputGroup :data="getValue(k+'_vals')"/>
+                                <InputGroup :data="getValue(k).vals" />
                             </details>
                         </div>
                     </template>
@@ -258,6 +267,7 @@ const chooseColorObject = (color: ColorObject) => {
 .preview svg {
     width: 100%;
     aspect-ratio: 1/1;
+    height: 100%;
 }
 
 .cur-color-block {

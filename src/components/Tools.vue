@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ElementObjectType } from '@/objects/ElementObject';
+import {exportObeject} from '@/objects/ObjectUtils'
 import { useStage } from '../store/stage';
 
 const stage = useStage()
-function reset_mouse(){
-    stage.mouse.curElType = ElementObjectType.none;
+function exportFile(){
+    exportObeject(stage.elements);
 }
 </script>
 <template>
     <div class="contr">
-        <span @click="reset_mouse">选择</span>
+        <span @click="exportFile">导出</span>
     </div>
 </template>

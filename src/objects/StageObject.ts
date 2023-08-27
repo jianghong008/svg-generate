@@ -1,5 +1,5 @@
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
-import { AnimateAttribute, EffctEnum, FilterObject, MultipleValueListObject, MultipleValueObject, StageObecjArray, TransformType, panelTitle } from "./ObjectUtils";
+import { AnimateAttribute, EffctEnum, FilterObject, MultipleValueListObject, MultipleValueObject, SelectObject, StageObecjArray, TransformType, panelTitle } from "./ObjectUtils";
 /**
  * 舞台组件
  */
@@ -39,7 +39,11 @@ export class StageObject {
     pathToString() {
         return ''
     }
-    addChild(t: EffctEnum) {
+    /**
+     * 添加动画
+     * @param t 
+     */
+    addAnimate(t: EffctEnum) {
         let child: StageObject | null = null
         switch (t) {
             case EffctEnum.animate:
@@ -56,6 +60,8 @@ export class StageObject {
         }
         if (child) {
             this.children.push(child);
+        }else{
+            console.warn('暂不支持')
         }
     }
 }
@@ -63,8 +69,6 @@ export class StageObject {
  * SVG 组件
  */
 export class SvgObject extends StageObject {
-    @panelTitle('视图大小')
-    public viewBox: string = '0 0 500 500';
     public xmlns: string = 'http://www.w3.org/2000/svg';
     @panelTitle('宽度')
     public width: number = 500;
@@ -74,6 +78,9 @@ export class SvgObject extends StageObject {
     constructor() {
         super();
         this.name = 'svg'
+    }
+    public get viewBox(): string {
+        return '0 0 ' + this.width + ' ' + this.height;
     }
 }
 
@@ -143,11 +150,24 @@ export class AnimateTransformObject extends StageObject {
     public attributeName: string = 'transform';
     public attributeType: string = 'XML';
     @panelTitle('变换类型')
-    public transformType: TransformType = new TransformType('');
+    public transformType: SelectObject = new SelectObject('rotate', [
+        {
+            title: '旋转',
+            value: 'rotate'
+        },
+        {
+            title: '缩放',
+            value: 'scale'
+        },
+        {
+            title: '位移',
+            value: 'translate'
+        }
+    ]);
     @panelTitle('起始状态')
-    public from: MultipleValueObject = new MultipleValueObject([]);
+    public from: MultipleValueObject = new MultipleValueObject(new TransformType(this.transformType.value).vals)
     @panelTitle('结束状态')
-    public to: MultipleValueObject = new MultipleValueObject([]);
+    public to: MultipleValueObject = new MultipleValueObject(new TransformType(this.transformType.value).vals)
     @panelTitle('循环次数')
     public repeatCount: number | string = 'indefinite';
     @panelTitle('持续时间/s')
@@ -163,6 +183,35 @@ export class AnimateTransformObject extends StageObject {
     get to_vals() {
         return this.transformType.vals;
     }
+    public set new_transformType(t: string) {
+        this.transformType.value = t;
+        this.from.vals = new TransformType(t).vals;
+        this.to.vals = new TransformType(t).vals;
+    }
+
+    get fromValue() {
+        let s = ''
+        if (this.transformType.value === 'rotate') {
+            s = this.from.getVal('a') + ' ' + (this.from.getVal('x')) + ' ' + (this.from.getVal('y'));
+        } else if (this.transformType.value === 'translate') {
+            s = this.from.getVal('x') + ' ' + this.from.getVal('y');
+        } else if (this.transformType.value === 'scale') {
+            s = (this.from.getVal('x')) + ' ' + (this.from.getVal('y'));
+        }
+        return s
+    }
+
+    get toValue() {
+        let s = ''
+        if (this.transformType.value === 'rotate') {
+            s = this.to.getVal('a') + ' ' + (this.to.getVal('x')) + ' ' + (this.to.getVal('y'));
+        } else if (this.transformType.value === 'translate') {
+            s = this.to.getVal('x') + ' ' + this.to.getVal('y');
+        } else if (this.transformType.value === 'scale') {
+            s = (this.to.getVal('x')) + ' ' + (this.to.getVal('y'));
+        }
+        return s
+    }
 }
 
 export class MotionPath extends StageObject {
@@ -170,56 +219,7 @@ export class MotionPath extends StageObject {
     @panelTitle('动画路径')
     public href: string = '';
 }
-export class TransformOriginObject extends StageObject {
-    public name = '变换原点';
-    @panelTitle('x%')
-    public x: number = 50;
-    @panelTitle('y%')
-    public y: number = 50;
-    get value() {
-        return this.toString();
-    }
-    toString(): string {
-        return this.x + '% ' + this.y + '%'
-    }
-}
-export class TransformValueObject extends StageObject {
-    @panelTitle('x')
-    public x: number = 0;
-    @panelTitle('y')
-    public y: number = 0;
-}
-export class TransformSkew extends TransformValueObject {
-    @panelTitle('角度x')
-    public x: number = 0;
-    @panelTitle('角度y')
-    public y: number = 0;
-    public name: string = '倾斜';
-}
-export class TransformRotate extends TransformValueObject {
-    public name: string = '旋转';
-    @panelTitle('角度')
-    public a: number = 0;
-}
-export class TransformTranslate extends TransformValueObject {
-    @panelTitle('偏移x')
-    public x: number = 0;
-    @panelTitle('偏移y')
-    public y: number = 0;
-    public name: string = '平移';
-}
-export class TransformScale extends TransformValueObject {
-    @panelTitle('比例x')
-    public x: number = 0;
-    @panelTitle('比例y')
-    public y: number = 0;
-    public name: string = '缩放';
-    constructor() {
-        super()
-        this.x = 1;
-        this.y = 1;
-    }
-}
+
 /**
  * 变换
  */
@@ -281,12 +281,12 @@ export class TransformObject extends MultipleValueListObject {
         {
             title: 'x',
             type: 'number',
-            val: 50
+            val: 0
         },
         {
             title: 'y',
             type: 'number',
-            val: 50
+            val: 0
         }
     ]);
     public name = '变换';
@@ -318,6 +318,10 @@ export class TransformObject extends MultipleValueListObject {
         scale(${this.scale.getVal("x")},${this.scale.getVal('y')}) 
         skewX(${this.skew.getVal("x")}) skewY(${this.skew.getVal("y")})`
         return s
+    }
+
+    get origin() {
+        return `${this.transformOrigin.getVal('x') + this.parent?.x} ${this.transformOrigin.getVal('y') + this.parent?.y}`
     }
 }
 

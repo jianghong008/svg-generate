@@ -63,6 +63,10 @@ export class ElementObject extends StageObject {
     public path: PathDrawItem[] = [];
     @panelTitle('变换')
     public transform: TransformObject = new TransformObject();
+    constructor(){
+        super();
+        this.transform.parent = this;
+    }
     pathToString() {
         let s = ''
         for (let index = 0; index < this.path.length; index++) {
@@ -146,6 +150,8 @@ export class TextObject extends ElementObject {
     public fontSize = 16;
     @panelTitle('文本字体')
     public fontFamily: string = 'inherit';
+    @panelTitle('动画')
+    public children = new StageObecjArray<StageObject>;
     public textLength: string = 'None';
     constructor(x: number, y: number) {
         super();

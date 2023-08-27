@@ -29,3 +29,8 @@ interface InputFormGroup {
     key: string,
     args: InputFormItem[],
 }
+
+interface SelectValueObject{
+    title:string;
+    value:string;
+}

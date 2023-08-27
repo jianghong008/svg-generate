@@ -5,10 +5,10 @@ export const ColorList = [
         title: '单色',
         key: 'color',
     }, {
-        title: '线性渐变',
+        title: '线性',
         key: 'linear',
     }, {
-        title: '径向渐变',
+        title: '径向',
         key: 'radial',
     }
 ]

@@ -146,7 +146,7 @@ export class AnimateAttribute {
         const ar = Reflect.ownKeys(so);
         const temp: string[] = [];
         for (let k of ar) {
-            if (typeof k === 'string' && typeof Reflect.get(so, k) !== 'function') {
+            if (typeof k === 'string' && Reflect.get(so, '_' + k)) {
                 temp.push(k);
             }
         }
@@ -168,81 +168,8 @@ export const createPathDrawItem = (method: PathDrawMethod, points: PathPoint[]) 
     return point
 }
 
-export const TransformEnums: InputFormGroup[] = [
-    {
-        title: "旋转",
-        key: "rotate",
-        args: [
-            {
-                type: 'number',
-                title: 'x',
-                val: 0
-            },
-            {
-                type: 'number',
-                title: 'y',
-                val: 0
-            }
-        ]
-    },
-    {
-        title: "位移",
-        key: "translate",
-        args: [
-            {
-                type: 'number',
-                title: 'x',
-                val: 0
-            },
-            {
-                type: 'number',
-                title: 'y',
-                val: 0
-            }
-        ]
-    },
-    {
-        title: "缩放",
-        key: "scale",
-        args: [
-            {
-                type: 'number',
-                title: 'x',
-                val: 1
-            },
-            {
-                type: 'number',
-                title: 'y',
-                val: 1
-            }
-        ]
-    },
-    {
-        title: "倾斜Y",
-        key: "skewY",
-        args: [
-            {
-                type: 'number',
-                title: 'y',
-                val: 0
-            },
-        ]
-    },
-    {
-        title: "倾斜X",
-        key: "skewX",
-        args: [
-            {
-                type: 'number',
-                title: 'x',
-                val: 0
-            },
-        ]
-    }
-]
-
 export class TransformType {
-    private _val = '';
+    private _val = 'rotate';
     constructor(val: string) {
         this._val = val;
     }
@@ -250,12 +177,82 @@ export class TransformType {
         return this._val;
     }
     get enums() {
-        return TransformEnums
+        return [
+            {
+                title: "旋转",
+                key: "rotate",
+                args: [
+                    {
+                        type: 'number',
+                        title: 'a',
+                        val: 0
+                    },
+                    {
+                        type: 'number',
+                        title: 'x',
+                        val: 0
+                    },
+                    {
+                        type: 'number',
+                        title: 'y',
+                        val: 0
+                    }
+                ]
+            },
+            {
+                title: "位移",
+                key: "translate",
+                args: [
+                    {
+                        type: 'number',
+                        title: 'x',
+                        val: 0
+                    },
+                    {
+                        type: 'number',
+                        title: 'y',
+                        val: 0
+                    }
+                ]
+            },
+            {
+                title: "缩放",
+                key: "scale",
+                args: [
+                    {
+                        type: 'number',
+                        title: 'x',
+                        val: 1
+                    },
+                    {
+                        type: 'number',
+                        title: 'y',
+                        val: 1
+                    }
+                ]
+            },
+            {
+                title: "倾斜",
+                key: "skew",
+                args: [
+                    {
+                        type: 'number',
+                        title: 'x',
+                        val: 0
+                    },
+                    {
+                        type: 'number',
+                        title: 'y',
+                        val: 0
+                    },
+                ]
+            }
+        ]
     }
-    get vals() {
+    get vals(): InputFormItem[] {
         for (const e of this.enums) {
             if (e.key === this._val) {
-                return e.args;
+                return e.args as InputFormItem[];
             }
         }
         return [];
@@ -265,6 +262,7 @@ export class TransformType {
  * 多值对象
  */
 export class MultipleValueObject {
+    public parent: StageObject | null = null;
     public vals: InputFormItem[] = [];
     constructor(vals: InputFormItem[]) {
         this.vals = vals;
@@ -291,5 +289,18 @@ export class MultipleValueObject {
  * 多值对象组
  */
 export class MultipleValueListObject {
+    public parent: StageObject | null = null;
+}
 
+export class SelectObject {
+    public value: string = '';
+    public vals: SelectValueObject[] = [];
+    constructor(val: string, vals: SelectValueObject[]) {
+        this.value = val;
+        this.vals = vals;
+    }
+}
+
+export function exportObeject(obj:StageObject){
+    console.log('导出obj')
 }

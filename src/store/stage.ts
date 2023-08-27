@@ -59,6 +59,8 @@ export const useStage = defineStore('stage', () => {
     const chooseElement = (id?: string | StageObject) => {
         currentObject.elements = [];
         currentObject.child = null;
+        currentObject.last = currentObject.element;
+        currentObject.element = null;
         mouse.arg = null;
         if (id && id instanceof StageObject) {
             currentObject.last = currentObject.element;

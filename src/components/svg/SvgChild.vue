@@ -16,7 +16,7 @@ defineProps<{
             :height="el.getValue('height')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
             :stroke="el.getValue('stroke').value" :stroke-width="el.getValue('strokeWidth')"
             :fill="el.getValue('fill').value" :fill-opacity="el.getValue('fillOpacity')"
-            :transform-origin="el.transform.transformOrigin.value" :transform="el.transform.transformToString()"
+            :transform-origin="el.transform.origin" :transform="el.transform.transformToString()"
             :rx="el.getValue('rx')" :ry="el.getValue('ry')">
             <SvgEffect :data="el.children" />
         </rect>
@@ -24,23 +24,24 @@ defineProps<{
             :rx="el.getValue('rx')" :ry="el.getValue('ry')"
             :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :stroke="el.getValue('stroke').value"
             :stroke-width="el.getValue('strokeWidth')" :fill="el.getValue('fill').value"
-            :fill-opacity="el.getValue('fillOpacity')" :transform-origin="el.transform.transformOrigin.value"
+            :fill-opacity="el.getValue('fillOpacity')" :transform-origin="el.transform.origin"
             :transform="el.transform.transformToString()">
             <SvgEffect :data="el.children" />
         </ellipse>
         <path :data-id="el.id" v-else-if="el.type == ElementObjectType.path"
             :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :x="el.x" :y="el.y" :d="el.pathToString()"
             :stroke="el.getValue('stroke').value" :stroke-width="el.getValue('strokeWidth')"
-            :fill="el.getValue('fill').value" :transform-origin="el.transform.transformOrigin.value"
+            :fill="el.getValue('fill').value" :transform-origin="el.transform.origin"
             :transform="el.transform.transformToString()" :fill-opacity="el.getValue('fillOpacity')">
             <SvgEffect :data="el.children" />
         </path>
         <text :data-id="el.id" v-else-if="el.type == ElementObjectType.text" :x="el.x" :y="el.y"
             :font-size="el.getValue('fontSize')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
             :stroke="el.getValue('stroke').value" :stroke-width="el.getValue('strokeWidth')"
-            :transform-origin="el.transform.transformOrigin.value" :transform="el.transform.transformToString()"
+            :transform-origin="el.transform.origin" :transform="el.transform.transformToString()"
             :fill="el.getValue('fill').value" :fill-opacity="el.getValue('fillOpacity')">
             {{ el.getValue('text') }}
+            <SvgEffect :data="el.children" />
         </text>
         <use :data-id="el.id" v-else-if="el.type == ElementObjectType.use" :width="el.getValue('width')"
             :height="el.getValue('height')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
