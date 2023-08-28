@@ -83,20 +83,22 @@ function setColorVal(e: { cssColor: string }) {
 
 }
 const picker = ref<HTMLDivElement>();
-let clolorTimer:any = null
+let clolorTimer: any = null
 function pickColor(e: MouseEvent) {
-    
+
     showColor.value = true;
     mouse.down = false;
     clearTimeout(clolorTimer);
     mouse.x = 0;
     clolorTimer = setTimeout(() => {
         if (!picker.value) {
-        return
-    }
+            return
+        }
         const rect = picker.value.getBoundingClientRect();
-        if (rect.width + e.screenX > window.innerWidth) {
-            mouse.x = window.innerWidth - rect.width;
+        if (rect.width + e.screenX > window.innerWidth/2) {
+            mouse.x = window.innerWidth - rect.width / 2;
+        } else if (e.screenX - rect.width / 2 < 0) {
+            mouse.x = rect.width / 2;
         } else {
             mouse.x = e.screenX;
         }
@@ -106,7 +108,7 @@ function pickColor(e: MouseEvent) {
         } else {
             mouse.y = e.screenY;
         }
-    },100)
+    }, 100)
 
 }
 
@@ -123,10 +125,11 @@ function pickColor(e: MouseEvent) {
         <div v-show="(currentObject.child instanceof SvgColor)" class="simple-color">
             <span :style="{ backgroundColor: currentObject.child.getValue('value') }" @mousedown.stop="pickColor"></span>
         </div>
-        <div ref="picker" class="color-picker" v-show="showColor" :style="{ left: mouse.x + 'px', top: mouse.y + 'px',opacity:mouse.x>0?1:0 }">
+        <div ref="picker" class="color-picker" v-show="showColor"
+            :style="{ left: mouse.x + 'px', top: mouse.y + 'px', opacity: mouse.x > 0 ? 1 : 0 }">
             <ColorPicker :color="curColor" @color-change="setColorVal" />
-            <p>
-                <span class="btn" @click="showColor = false">确定</span>
+            <p class="btn" @click="showColor = false">
+                确定
             </p>
         </div>
     </div>
@@ -155,13 +158,16 @@ function pickColor(e: MouseEvent) {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    width: 300px;
     background-color: #fff;
-    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 1px 8px rgb(0 0 0 / 60%);
+    color: #000;
 }
 
 .btn {
     cursor: pointer;
     user-select: none;
+    color: #242424;
 }
 
 .simple-color {

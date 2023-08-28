@@ -43,7 +43,7 @@ import Bottom from './Bottom.vue'
     width: 70vw;
 }
 .bottom{
-    grid-column: 2/6;
+    grid-column: 1/8;
     grid-row: 16/18;
     height: 8rem;
 }

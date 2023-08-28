@@ -6,10 +6,14 @@ window.oncontextmenu = (e)=>{
 </script>
 
 <template>
-  <Editor/>
+  <Editor class="eidtor-warp"/>
 </template>
 
 <style>
+.eidtor-warp{
+  background-color: #121212;
+  color: #fff;
+}
 .contr{
     user-select: none;
 }

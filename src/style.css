@@ -16,14 +16,15 @@
 *{
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 *::-webkit-scrollbar{
   width: 2px;
-  background: #d9d9d9;
+  background: #505050;
 }
 *::-webkit-scrollbar-thumb{
   width: 2px;
-  background: #868686;
+  background: #b0b0b0;
 }
 a {
   font-weight: 500;

@@ -67,6 +67,6 @@ onMounted(() => {
 </template>
 <style scoped>
 svg {
-    border: solid 1px gray;
+    background-color: #fff;
 }
 </style>

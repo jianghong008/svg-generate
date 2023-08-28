@@ -51,11 +51,11 @@ export class ElementObject extends StageObject {
     @panelTitle('顶部')
     public y: number = 0;
     @panelTitle('画笔颜色')
-    public stroke: ColorObject = new SvgColor('#000000');
+    public stroke: ColorObject = new SvgColor();
     @panelTitle('画笔大小')
     public strokeWidth: number = 1;
     @panelTitle('填充')
-    public fill: ColorObject = new SvgColor('#000000');
+    public fill: ColorObject = new SvgColor('rgba(0,0,0,0)');
     @panelTitle('填充度')
     public fillOpacity: number = 1;
     public filter: string = FilterObject.none();

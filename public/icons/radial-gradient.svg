@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" view-box="0,0,32,32" width="32" height="32">
+    <defs>
+        <radialGradient id="terdwdfn_1693225161984_6959">
+            <stop offset="1%" stop-color="rgb(255,237.29 ,237.29 ,1)"></stop>
+            <stop offset="99%" stop-color="rgba(0, 0,0, 1)"></stop>
+        </radialGradient>
+    </defs>
+    <rect x="0" r="0" width="32" height="32" fill="url('#terdwdfn_1693225161984_6959')"></rect>
+</svg>

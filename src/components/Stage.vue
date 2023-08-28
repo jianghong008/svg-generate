@@ -60,6 +60,11 @@ function mousemove(e: MouseEvent) {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #242424;
+    border-radius: 0.3rem;
+    padding: 1rem 0.5rem;
+    margin: 0 0.1rem;
+    overflow: auto;
 }
 
 .svg-box {

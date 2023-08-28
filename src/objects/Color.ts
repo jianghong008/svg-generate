@@ -4,12 +4,15 @@ export const ColorList = [
     {
         title: '单色',
         key: 'color',
+        ico:'/icons/black-color.svg'
     }, {
         title: '线性',
         key: 'linear',
+        ico:'/icons/linear-gradient.svg'
     }, {
         title: '径向',
         key: 'radial',
+        ico:'/icons/radial-gradient.svg'
     }
 ]
 /**
@@ -19,7 +22,7 @@ export class ColorObject extends StageObject {
     public colorType = 'color';
 }
 export class SvgColor extends ColorObject {
-    private _color = '#000000';
+    private _color = '#000';
     public colorType = 'color'
     constructor(color?: string) {
         super()

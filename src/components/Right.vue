@@ -22,8 +22,8 @@ function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!currentObject.element) {
         return
     }
-    if(Reflect.get(currentObject.element,key) instanceof SelectObject){
-        Reflect.set(currentObject.element,'new_'+key,val)
+    if (Reflect.get(currentObject.element, key) instanceof SelectObject) {
+        Reflect.set(currentObject.element, 'new_' + key, val)
         return
     }
     if ((input as any).type === 'checkbox') {
@@ -125,7 +125,12 @@ const chooseColorObject = (color: ColorObject) => {
         <template v-if="!mouse.arg">
             <h3>属性</h3>
             <div class="right-plane" v-if="currentObject.element">
-                <h4>{{ currentObject.element.name }}</h4>
+                <div class="right-plane-item">
+                    <span>名称</span>
+                    <span>
+                        {{ currentObject.element.name }}
+                    </span>
+                </div>
                 <div v-for="k in propertys" class="right-plane-item" :key="k">
                     <template v-if="typeof k === 'string' && getValue('_' + k)">
                         <span>{{ getValue('_' + k) }}</span>
@@ -139,7 +144,7 @@ const chooseColorObject = (color: ColorObject) => {
                         <!-- 动画 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof StageObecjArray)">
                             <details>
-                                <summary>集合</summary>
+                                <summary></summary>
                                 <ul>
                                     <li v-for="a in currentObject.element.children" :key="a.id"
                                         v-show="!(a instanceof ElementObject)" @click="chooseEffect(a)">
@@ -168,14 +173,15 @@ const chooseColorObject = (color: ColorObject) => {
                         <!-- 下拉选项 -->
                         <select v-else-if="(getValue(k) instanceof SelectObject)" :value="getValue(k).value"
                             @change="setValue(k, $event.target, true)">
-                            <option v-for="e in getValue(k).vals" :key="e.value" :selected="getValue(k).value==e.value" :value="e.value">
+                            <option v-for="e in getValue(k).vals" :key="e.value" :selected="getValue(k).value == e.value"
+                                :value="e.value">
                                 {{ e.title }}
                             </option>
                         </select>
                         <!-- 多值组 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof MultipleValueListObject)">
                             <details>
-                                <summary>集合</summary>
+                                <summary></summary>
                                 <ul>
                                     <li v-for="item of getValue(k).keys" :key="item.key">
                                         <span>{{ item.title }}</span>
@@ -187,7 +193,7 @@ const chooseColorObject = (color: ColorObject) => {
                         <!-- 颜色 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof ColorObject)">
                             <details>
-                                <summary>集合</summary>
+                                <summary></summary>
                                 <p>当前：</p>
                                 <div class="cur-color-block">
                                     <span v-if="(getValue(k) instanceof SvgColor)"
@@ -199,10 +205,10 @@ const chooseColorObject = (color: ColorObject) => {
                                     </svg>
                                 </div>
                                 <p>可选：</p>
-                                <ul>
+                                <ul class="color-list">
                                     <li v-for="color in ColorList" :key="color.key"
                                         @click.stop="addColorObject(k, color.key)">
-                                        {{ color.title }}
+                                        <img :src="color.ico" :alt="color.title">
                                     </li>
                                 </ul>
                             </details>
@@ -210,7 +216,7 @@ const chooseColorObject = (color: ColorObject) => {
                         <!-- 多值设置 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof MultipleValueObject)">
                             <details>
-                                <summary>集合</summary>
+                                <summary></summary>
                                 <InputGroup :data="getValue(k).vals" />
                             </details>
                         </div>
@@ -229,6 +235,15 @@ const chooseColorObject = (color: ColorObject) => {
 <style scoped>
 .right {
     overflow-y: auto;
+    padding: 1rem 0.5rem;
+    color: #6c6c6c;
+    background-color: #242424;
+    border-radius: 0.3rem;
+}
+
+.right h3 {
+    color: #545454;
+    font-size: 0.9rem;
 }
 
 .right-plane-item {
@@ -243,8 +258,23 @@ const chooseColorObject = (color: ColorObject) => {
     user-select: none;
 }
 
+.right-plane-item:not(.right-plane-item:empty) {
+    border-bottom: solid 1px #1a1a1a;
+    padding: 0.5rem 0;
+}
+
+.right-plane-item>span {
+    color: #6c6c6c;
+    font-size: 0.9rem;
+}
+
 .right-plane-item input:not(input[type='color']) {
     width: 5em;
+    color: #fff;
+    background-color: #1a1a1a;
+    outline: none;
+    border: none;
+    padding: 6px;
 }
 
 .input-panel {
@@ -260,6 +290,10 @@ const chooseColorObject = (color: ColorObject) => {
     padding: 0;
 }
 
+.input-panel details {
+    text-align: right;
+}
+
 .input-panel summary {
     text-align: right;
 }
@@ -273,6 +307,7 @@ const chooseColorObject = (color: ColorObject) => {
 .cur-color-block {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .cur-color-block span,
@@ -280,4 +315,8 @@ const chooseColorObject = (color: ColorObject) => {
     width: 2rem;
     height: 2rem;
 }
-</style>
+
+.color-list {
+    display: flex;
+    gap: 1px;
+}</style>

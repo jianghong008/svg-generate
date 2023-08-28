@@ -37,7 +37,7 @@ function choose_el(id: string) {
     <div class="contr left">
         <h3>基础</h3>
         <div class="list icons">
-            <div v-for="e in ElementTypes" @click="choose_type(e.key)"
+            <div class="icon-box" v-for="e in ElementTypes" @click="choose_type(e.key)"
                 :class="{ 'type-active': e.key === stage.mouse.curElType }">
                 <img v-if="e.key === ElementObjectType.rect" class="icon" src="../assets/left-icos/rect.svg" alt="rect"
                     :title="e.name">
@@ -72,33 +72,41 @@ function choose_el(id: string) {
 <style scoped>
 .left {
     overflow-y: auto;
+    background-color: #242424;
+    border-radius: 0.3rem;
+    padding: 1rem 0.5rem;
+    text-align: left;
 }
-
+.left h3{
+    color: #545454;
+    font-size: 0.9rem;
+}
 .type-active {
-    background-color: #e4e4e4;
+    background-color: #004868;
 }
 
 .el-active {
-    color: #FF5722;
+    background-color: #026d9d;
 }
 
 .contr .list:not(.icons) {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    margin: 0.5rem 0;
+    align-items: stretch;
 }
 
 .icons {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    padding: 0 1rem;
-    gap: 0.2rem;
-    justify-content: center;
+    padding: 1rem 0;
+    gap: 0.5rem;
+    justify-content: flex-start;
 }
 
 .contr .list div {
-
+    border-radius: 0.5rem;
     position: relative;
 }
 
@@ -122,9 +130,15 @@ function choose_el(id: string) {
 .contr .list div:hover img:not(.icon) {
     display: inline-block;
 }
-
+.icon-box{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.icon-box:hover{
+    background-color: #012b3d;
+}
 .icon {
-    width: 1rem;
-    height: 1rem;
+    width: 100%;
+    height: 100%;
 }
 </style>

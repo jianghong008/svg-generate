@@ -125,8 +125,8 @@ function menuAction(index: number) {
 }
 
 .menu {
-    background-color: #fff;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    background-color: #454545;
+    box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
     list-style: none;
     text-align: left;
     padding: 0;
@@ -143,7 +143,7 @@ function menuAction(index: number) {
 }
 
 .menu li:not(.disabled):hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: #00608c;
 
 }
 </style>

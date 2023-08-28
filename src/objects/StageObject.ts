@@ -60,7 +60,7 @@ export class StageObject {
         }
         if (child) {
             this.children.push(child);
-        }else{
+        } else {
             console.warn('暂不支持')
         }
     }
@@ -125,13 +125,29 @@ export class AnimateObject extends StageObject {
     }
 
     public get values() {
-        const ar: string[] = [];
-        const keys = this.keyTimes.split(';')
+        const ar: any[] = [];
+        const keys = this.keyTimes.split(';');
+        let origin = 0
+        if (this.parent) {
+            switch (this.attributeName.value) {
+                case 'x':
+                    origin = this.parent.x;
+                    break;
+                case 'y':
+                    origin = this.parent.y;
+                    break;
+            }
+        }
+
         for (const k of keys) {
             const tk = Number(k) * 10;
             const val = this.timeLine.get(String(tk));
             if (val !== undefined) {
-                ar.push(val);
+                if (origin != 0) {
+                    ar.push(origin + Number(val));
+                } else {
+                    ar.push(val);
+                }
             }
         }
         return ar.join(';')
