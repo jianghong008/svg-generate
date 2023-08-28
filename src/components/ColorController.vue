@@ -116,7 +116,7 @@ function pickColor(e: MouseEvent) {
 <template>
     <div class="color" v-if="(currentObject.child instanceof ColorObject)">
         <div v-show="!(currentObject.child instanceof SvgColor)" ref="colorBlock" class="color-block"
-            :style="{ background: currentObject.child.getValue('cssColor') }" @click.self="addColor">
+            :style="{ background: currentObject.child.getValue('cssColor') }" @click.self="addColor" title="点击设置颜色">
             <span v-for="(s, i ) in currentObject.child.children" :key="i"
                 :style="{ left: s.getValue('offset') + '%', backgroundColor: s.getValue('stopColor') }"
                 @mousedown.stop="setColor($event, i)" @mouseup.stop="pickColor">
@@ -139,6 +139,7 @@ function pickColor(e: MouseEvent) {
     position: relative;
     height: 1rem;
     border: solid 1px gray;
+    cursor: pointer;
 }
 
 .color-block span {
@@ -151,6 +152,7 @@ function pickColor(e: MouseEvent) {
     background: #000;
     outline: solid 1px #fff;
     transform: translateX(-25%);
+    
 }
 
 .color-picker {
