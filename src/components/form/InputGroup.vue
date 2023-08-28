@@ -29,8 +29,24 @@ const onchange = (e:InputFormItem) => {
 .input-group {
     display: flex;
     flex-direction: column;
+    gap: 0.3rem;
 }
 .input-group input{
     width: 4rem;
+}
+.input-group input:not(input[type='color']) {
+    width: 5em;
+    color: #fff;
+    background-color: #1a1a1a;
+    outline: none;
+    border: none;
+    padding: 6px;
+}
+.input-group select{
+    color: #fff;
+    background-color: #1a1a1a;
+    outline: none;
+    border: none;
+    padding: 6px;
 }
 </style>

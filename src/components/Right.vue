@@ -145,7 +145,7 @@ const chooseColorObject = (color: ColorObject) => {
                         <div class="input-panel" v-else-if="(getValue(k) instanceof StageObecjArray)">
                             <details>
                                 <summary></summary>
-                                <ul>
+                                <ul class="animates">
                                     <li v-for="a in currentObject.element.children" :key="a.id"
                                         v-show="!(a instanceof ElementObject)" @click="chooseEffect(a)">
                                         {{ a.name }}
@@ -157,7 +157,7 @@ const chooseColorObject = (color: ColorObject) => {
                                             {{ e.title }}
                                         </option>
                                     </select>
-                                    <span @click="addEffect(k)">添加</span>
+                                    <span class="btn" @click="addEffect(k)">添加</span>
                                 </div>
                             </details>
 
@@ -268,7 +268,7 @@ const chooseColorObject = (color: ColorObject) => {
     font-size: 0.9rem;
 }
 
-.right-plane-item input:not(input[type='color']) {
+.right input:not(input[type='color']) {
     width: 5em;
     color: #fff;
     background-color: #1a1a1a;
@@ -276,7 +276,17 @@ const chooseColorObject = (color: ColorObject) => {
     border: none;
     padding: 6px;
 }
-
+.right select{
+    color: #fff;
+    background-color: #1a1a1a;
+    outline: none;
+    border: none;
+    padding: 6px;
+}
+.right-plane-item select option{
+    outline: none;
+    border: none;
+}
 .input-panel {
     display: flex;
     flex-direction: column;
@@ -319,4 +329,26 @@ const chooseColorObject = (color: ColorObject) => {
 .color-list {
     display: flex;
     gap: 1px;
-}</style>
+}
+.btn{
+    background: #3a3a3a;
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    margin: 0.2rem;
+    cursor: pointer;
+}
+.btn:hover{
+    background: #2c2c2c;
+}
+.animates li{
+    margin: 0.5rem;
+    color: #fff;
+    padding: 0.2rem;
+    border-radius: 0.3rem;
+    text-align: left;
+}
+.animates li:hover{
+    background-color: #026d9d;
+}
+</style>
