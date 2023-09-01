@@ -242,7 +242,7 @@ const chooseColorObject = (color: ColorObject) => {
 }
 
 .right h3 {
-    color: #545454;
+    color: #c1c1c1;
     font-size: 0.9rem;
 }
 
@@ -264,7 +264,7 @@ const chooseColorObject = (color: ColorObject) => {
 }
 
 .right-plane-item>span {
-    color: #6c6c6c;
+    color: #8f8f8f;
     font-size: 0.9rem;
 }
 

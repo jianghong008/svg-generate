@@ -78,7 +78,7 @@ function choose_el(id: string) {
     text-align: left;
 }
 .left h3{
-    color: #545454;
+    color: #838383;
     font-size: 0.9rem;
 }
 .type-active {
