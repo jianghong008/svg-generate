@@ -262,7 +262,7 @@ export const useStage = defineStore('stage', () => {
         }
 
         //从组中取出
-        elements.defs.forEach((el, index) => {
+        elements.defs.forEach((el) => {
             if (el.id === gid) {
                 el.children.forEach(gc => {
                     //恢复位置

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 
 export const useSystem = defineStore('system', () => {
     const message = reactive({
