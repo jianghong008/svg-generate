@@ -16,8 +16,8 @@ defineProps<{
             :height="el.getValue('height')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
             :stroke="el.getValue('stroke').value" :stroke-width="el.getValue('strokeWidth')"
             :fill="el.getValue('fill').value" :fill-opacity="el.getValue('fillOpacity')"
-            :transform-origin="el.transform.origin" :transform="el.transform.transformToString()"
-            :rx="el.getValue('rx')" :ry="el.getValue('ry')">
+            :transform-origin="el.transform.origin" :transform="el.transform.transformToString()" :rx="el.getValue('rx')"
+            :ry="el.getValue('ry')">
             <SvgEffect :data="el.children" />
         </rect>
         <ellipse :data-id="el.id" v-else-if="el.type == ElementObjectType.ellipse" :cx="el.x" :cy="el.y"
@@ -45,7 +45,8 @@ defineProps<{
         </text>
         <use :data-id="el.id" v-else-if="el.type == ElementObjectType.use" :width="el.getValue('width')"
             :height="el.getValue('height')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
-            :href="el.getValue('href').value" :x="el.x" :y="el.y">
+            :href="el.getValue('href').value" :x="el.x" :y="el.y" :transform-origin="el.transform.origin"
+            :transform="el.transform.transformToString()">
             <SvgEffect :data="el.children" />
         </use>
 
@@ -64,5 +65,15 @@ defineProps<{
 <style scoped>
 .el-active {
     outline: dashed 1px #FF5722;
+}
+
+path,
+rect,
+g,
+use,
+text,
+ellipse {
+    cursor: grab;
+    user-select: none;
 }
 </style>

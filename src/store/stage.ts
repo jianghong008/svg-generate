@@ -181,7 +181,7 @@ export const useStage = defineStore('stage', () => {
                 obj = new TextObject(x, y);
                 break;
             case ElementObjectType.group:
-                obj = new UseObject(0, 0, new UseObjectValue(mouse.arg));
+                obj = new UseObject(x, y, new UseObjectValue(mouse.arg));
                 mouse.arg = null;
                 break;
 
@@ -215,9 +215,18 @@ export const useStage = defineStore('stage', () => {
         if (currentObject.elements.length < 2) {
             return
         }
+        const x = currentObject.elements[0].x;
+        const y = currentObject.elements[0].y;
         const group = new GroupObject();
+        const use = new UseObject(x, y);
         group.name += elements.defs.length;
+        for (const el of currentObject.elements) {
+            //重置位置
+            el.x = el.x - x;
+            el.y = el.y - y;
+        }
         currentObject.elements.forEach((el) => {
+            //打组
             group.children.push(el);
             //删除舞台元素
             removeElement(el);
@@ -226,7 +235,6 @@ export const useStage = defineStore('stage', () => {
         //转存
         elements.defs.push(group);
         //引用
-        const use = new UseObject(0, 0);
         use.href = new UseObjectValue(group.id);
         elements.children.push(use);
     }
@@ -237,10 +245,14 @@ export const useStage = defineStore('stage', () => {
             return
         }
         let gid = '';
+        let x = 0;
+        let y = 0;
         //从舞台删除
         elements.children.forEach((el, index) => {
             if (el.id === id) {
-                gid = el.getValue('href').value;
+                x = el.x;
+                y = el.y;
+                gid = el.getValue('href').value.replace('#', '');
                 gid && elements.children.splice(index, 1);
                 return
             }
@@ -248,21 +260,25 @@ export const useStage = defineStore('stage', () => {
         if (!gid) {
             return
         }
+
         //从组中取出
         elements.defs.forEach((el, index) => {
             if (el.id === gid) {
                 el.children.forEach(gc => {
+                    //恢复位置
+                    gc.x += x;
+                    gc.y += y;
                     elements.children.push(gc);
                 })
                 //删除引用
-                elements.defs.splice(index, 1);
+                // elements.defs.splice(index, 1);
                 return
             }
         })
     }
 
     const addColorGradient = (color: ColorObject) => {
-        
+
         //清除未引用
         const ar: number[] = []
         elements.defs.forEach((def, index) => {

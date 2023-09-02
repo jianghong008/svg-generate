@@ -20,11 +20,11 @@
 }
 *::-webkit-scrollbar{
   width: 2px;
-  background: #505050;
+  background: #2d2d2d;
 }
 *::-webkit-scrollbar-thumb{
   width: 2px;
-  background: #b0b0b0;
+  background: #434343;
 }
 a {
   font-weight: 500;

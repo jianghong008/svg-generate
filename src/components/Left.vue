@@ -82,11 +82,11 @@ function choose_el(id: string) {
     font-size: 0.9rem;
 }
 .type-active {
-    background-color: #004868;
+    background-color: #069adf;
 }
 
 .el-active {
-    background-color: #026d9d;
+    background-color: #069adf;
 }
 
 .contr .list:not(.icons) {
@@ -135,7 +135,7 @@ function choose_el(id: string) {
     height: 1.5rem;
 }
 .icon-box:hover{
-    background-color: #012b3d;
+    background-color: #0074a6;
 }
 .icon {
     width: 100%;

@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { SvgColor } from '@/objects/Color';
 import { useStage } from '@/store/stage';
-import { computed } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { ColorObject, ColorList, RadialGradient, LinearGradient } from '@/objects/Color'
 import {
     EffctEnum, StageObecjArray,
     AnimateAttribute, MultipleValueObject,
     MultipleValueListObject, SelectObject
 } from '@/objects/ObjectUtils'
-import { ElementObject } from '@/objects/ElementObject'
+import { ElementObject, ElementObjectType } from '@/objects/ElementObject'
 import { StageObject } from '@/objects/StageObject';
 import InputGroup from './form/InputGroup.vue'
+import { useSystem } from '@/store/sys';
 
+const { showMessage } = useSystem()
 const { currentObject, chooseElement, chooseChild, addColorGradient, mouse } = useStage();
 
 function setValue(key: string, input: EventTarget | null, isString = false) {
@@ -80,7 +82,11 @@ const addEffect = (key: string) => {
         return
     }
 
-    currentObject.element.addAnimate(Number(input.value) as EffctEnum)
+    try {
+        currentObject.element.addAnimate(Number(input.value) as EffctEnum)
+    } catch (error: any) {
+        showMessage(error.message)
+    }
 }
 const chooseEffect = (s?: StageObject) => {
     if (!s) {
@@ -119,10 +125,53 @@ const addColorObject = (key: string, color: string) => {
 const chooseColorObject = (color: ColorObject) => {
     currentObject.child = color;
 }
+const previewSvg = ref<HTMLElement>();
+const previewUse = ref<HTMLElement>();
+const previewUseTransform = ref('scale(1)');
+const previewPosition = reactive({
+    x: 0,
+    y: 0,
+    loading: true,
+})
+const resizePreview = () => {
+    if (!mouse.arg || !previewSvg.value || !previewUse.value || mouse.curElType != ElementObjectType.group) {
+        return
+    }
+
+    const rect1 = previewSvg.value.getBoundingClientRect();
+    const rect2 = previewUse.value.getBoundingClientRect();
+
+    const ratio = rect2.width / rect2.height;
+
+    const scale = ratio >= 1 ? (rect1.width / rect2.width / 2) : (rect1.height / rect2.height / 2);
+
+    if (scale === Infinity || scale < 1) {
+        return
+    }
+    previewUseTransform.value = `scale(${scale})`;
+
+    const x = (rect1.width / 2 - rect2.width / 2) * scale;
+    const y = (rect1.height / 2 - rect2.height / 2) * scale;
+    previewPosition.x = x;
+    previewPosition.y = y;
+
+    previewPosition.loading = false;
+}
+let timer: any;
+watch(mouse, () => {
+
+    clearTimeout(timer);
+    previewPosition.loading = true;
+    previewUseTransform.value = `scale(1)`;
+    if (mouse.curElType != ElementObjectType.group) {
+        return
+    }
+    timer = setTimeout(resizePreview, 1000);
+})
 </script>
 <template>
     <div class="right">
-        <template v-if="!mouse.arg">
+        <template v-if="!mouse.arg || mouse.curElType !== ElementObjectType.group">
             <h3>属性</h3>
             <div class="right-plane" v-if="currentObject.element">
                 <div class="right-plane-item">
@@ -226,8 +275,13 @@ const chooseColorObject = (color: ColorObject) => {
         </template>
         <div v-else class="preview">
             <h3>预览</h3>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0,0,500,500" version="1.1" width="500" height="500">
-                <use :href="'#' + mouse.arg" />
+            <svg ref="previewSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0,0,500,500" version="1.1" width="500"
+                height="500">
+                <text v-show="previewPosition.loading" x="50%" y="50%" font-size="28" transform-origin="50% 50%"
+                    transform="translate(-68)">loading</text>
+                <use ref="previewUse" :x="previewPosition.x" :y="previewPosition.y" :href="'#' + mouse.arg"
+                    :transform="previewUseTransform" :transform-origin="previewPosition.x + ' ' + previewPosition.y"
+                    :style="{ opacity: previewPosition.loading ? 0 : 1 }" />
             </svg>
         </div>
     </div>
@@ -235,7 +289,7 @@ const chooseColorObject = (color: ColorObject) => {
 <style scoped>
 .right {
     overflow-y: auto;
-    padding: 1rem 0.5rem;
+    padding: 1rem 1rem;
     color: #6c6c6c;
     background-color: #242424;
     border-radius: 0.3rem;
@@ -276,17 +330,20 @@ const chooseColorObject = (color: ColorObject) => {
     border: none;
     padding: 6px;
 }
-.right select{
+
+.right select {
     color: #fff;
     background-color: #1a1a1a;
     outline: none;
     border: none;
     padding: 6px;
 }
-.right-plane-item select option{
+
+.right-plane-item select option {
     outline: none;
     border: none;
 }
+
 .input-panel {
     display: flex;
     flex-direction: column;
@@ -312,6 +369,7 @@ const chooseColorObject = (color: ColorObject) => {
     width: 100%;
     aspect-ratio: 1/1;
     height: 100%;
+    background-color: #fff;
 }
 
 .cur-color-block {
@@ -324,13 +382,15 @@ const chooseColorObject = (color: ColorObject) => {
 .cur-color-block svg {
     width: 2rem;
     height: 2rem;
+    outline: dashed 1px rgb(162, 162, 162);
 }
 
 .color-list {
     display: flex;
     gap: 1px;
 }
-.btn{
+
+.btn {
     background: #3a3a3a;
     color: #fff;
     padding: 0.2rem 0.5rem;
@@ -338,17 +398,20 @@ const chooseColorObject = (color: ColorObject) => {
     margin: 0.2rem;
     cursor: pointer;
 }
-.btn:hover{
+
+.btn:hover {
     background: #2c2c2c;
 }
-.animates li{
+
+.animates li {
     margin: 0.5rem;
     color: #fff;
     padding: 0.2rem;
     border-radius: 0.3rem;
     text-align: left;
 }
-.animates li:hover{
+
+.animates li:hover {
     background-color: #026d9d;
 }
 </style>

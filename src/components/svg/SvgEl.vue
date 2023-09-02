@@ -54,6 +54,7 @@ function mousedown(e: MouseEvent) {
 const svgDom = ref<HTMLElement>()
 onMounted(() => {
     stage.RootDom = svgDom.value;
+    stage.elements.dom = svgDom.value;
 })
 </script>
 <template>

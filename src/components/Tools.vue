@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { exportObeject } from '@/objects/ObjectUtils'
+import { exportObeject,copyObeject } from '@/objects/ObjectUtils'
 import { useStage } from '../store/stage';
-
+import { useSystem } from '@/store/sys';
+const {showMessage} = useSystem()
 const stage = useStage()
-function exportFile() {
+function copySvg(){
+    copyObeject(stage.elements);
+    showMessage('已复制到剪切板');
+}
+function exportSvg(){
     exportObeject(stage.elements);
+    showMessage('生成文件成功');
 }
 </script>
 <template>
     <div class="tools-box contr">
-        <span @click="exportFile">导出</span>
+        <span @click="copySvg">复制</span>
+        <span @click="exportSvg">导出</span>
     </div>
 </template>
 <style lang="css" scoped>
@@ -18,6 +25,8 @@ function exportFile() {
     border-radius: 0.3rem;
     padding: 1rem 1.5rem;
     margin-bottom: 0.1rem;
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
 }
 </style>

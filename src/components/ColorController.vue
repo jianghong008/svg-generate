@@ -180,5 +180,6 @@ function pickColor(e: MouseEvent) {
     width: 2rem;
     height: 2rem;
     display: inline-block;
+    outline: dashed 1px rgb(162, 162, 162);
 }
 </style>

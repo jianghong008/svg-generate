@@ -6,6 +6,7 @@ import { AnimateAttribute, EffctEnum, FilterObject, MultipleValueListObject, Mul
 export class StageObject {
     public id: string = '';
     public name: string = 'element';
+    public dom: HTMLElement | undefined = undefined;
     public initX = 0;
     public initY = 0;
     public x: number = 0;
@@ -24,7 +25,7 @@ export class StageObject {
     createID() {
         let str = '';
         for (let i = 0; i < 8; i++) {
-            const r = Math.round(Math.random() * 26) + 96;
+            const r = Math.floor(Math.random() * 26) + 97;
             str += String.fromCharCode(r);
         }
         return str + '_' + Date.now() + '_' + Math.round(Math.random() * 10000);
@@ -61,7 +62,7 @@ export class StageObject {
         if (child) {
             this.children.push(child);
         } else {
-            console.warn('暂不支持')
+            throw Error('暂不支持，开发中...');
         }
     }
 }

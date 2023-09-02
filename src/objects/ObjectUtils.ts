@@ -1,5 +1,5 @@
 import { PathDrawItem, PathDrawMethod } from "./ElementObject";
-import { StageObject } from "./StageObject";
+import { StageObject, SvgObject } from "./StageObject";
 
 export enum FillRule {
     NONZERO = 'nonzero',
@@ -300,7 +300,82 @@ export class SelectObject {
         this.vals = vals;
     }
 }
+/**
+ * 清理dom
+ */
+export function clearInvalidAttrsForDom(dom: HTMLElement) {
+    //去掉 data-v以及多余
+    const attrs = dom.getAttributeNames();
+    for (const attr of attrs) {
+        const attrCont = dom.getAttribute(attr);
+        if (/^data-.+/.test(attr) || !attrCont || attr === 'class') {
+            dom.removeAttribute(attr)
+        }
+    }
+    // defs
+    const defs = dom.getElementsByTagName('defs')[0];
 
-export function exportObeject(obj:StageObject){
-    console.log('导出obj')
+    if (defs && defs.children.length === 0) {
+        dom.removeChild(defs)
+    }
+    // 注释
+    dom.innerHTML = dom.innerHTML.replace(/<!--(.|\s)*?-->/, '');
+
+    // 清除子对象
+    for (const child of dom.children) {
+        clearInvalidAttrsForDom(child as HTMLElement);
+    }
+}
+
+/**
+ * 导出
+ * @param obj 
+ * @returns 
+ */
+export function exportObeject(obj: SvgObject) {
+    if (!obj.dom) {
+        console.error('dom不存在')
+        return
+    }
+    const dom = obj.dom.cloneNode(true) as HTMLElement;
+
+    clearInvalidAttrsForDom(dom)
+
+    const text = new XMLSerializer().serializeToString(dom);
+
+    const blob = new Blob([text], {
+        type: 'text/plain'
+    });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'mysvg.svg';
+    link.style.position = 'fixed';
+    link.style.right = '-200%';
+    link.style.scale = '0';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+export function copyObeject(obj: SvgObject) {
+    if (!obj.dom) {
+        console.error('dom不存在')
+        return
+    }
+    const dom = obj.dom.cloneNode(true) as HTMLElement;
+
+    clearInvalidAttrsForDom(dom);
+    copyText(new XMLSerializer().serializeToString(dom));
+}
+
+export function copyText(text: string) {
+    const dom = document.createElement('textarea');
+    dom.style.position = 'fixed';
+    dom.style.right = '-200%';
+    dom.style.scale = '0';
+    dom.value = text;
+    document.body.appendChild(dom);
+    dom.select();
+    document.execCommand('copy');
+    document.body.removeChild(dom);
 }

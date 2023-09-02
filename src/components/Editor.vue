@@ -4,6 +4,7 @@ import Left from './Left.vue'
 import Right from './Right.vue'
 import Stage from './Stage.vue'
 import Bottom from './Bottom.vue'
+import MessageBox from './MessageBox.vue'
 </script>
 <template>
     <div class="editor">
@@ -12,6 +13,7 @@ import Bottom from './Bottom.vue'
         <Stage class="stage" />
         <Right class="right" />
         <Bottom class="bottom"/>
+        <MessageBox/>
     </div>
 </template>
 <style scoped>
