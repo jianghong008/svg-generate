@@ -9,6 +9,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     }
   },
+  base:'svg-generate',
   server:{
     port:5180,
     host:'0.0.0.0'
