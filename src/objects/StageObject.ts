@@ -26,7 +26,7 @@ export class StageObject {
     /**
      * 路径字符描述
      */
-    get pathString(){
+    get pathString() {
         return '';
     }
     createID() {
@@ -58,7 +58,11 @@ export class StageObject {
                 child = new AnimateObject();
                 child.name += this.children.length;
                 child.parent = this;
-
+                break
+            case EffctEnum.animateMotion:
+                child = new AnimateMotionObject();
+                child.name += this.children.length;
+                child.parent = this;
                 break
             case EffctEnum.animateTransform:
                 child = new AnimateTransformObject();
@@ -110,7 +114,7 @@ export class AnimateObject extends StageObject {
     @panelTitle('变换次数')
     public repeatCount: number | string = 'indefinite';
     @panelTitle('时长/s')
-    public duration: number = 1;
+    public duration: number = 5;
 
     public timeLine = new Map<string, string>();
     constructor() {
@@ -163,10 +167,18 @@ export class AnimateObject extends StageObject {
 }
 
 export class AnimateMotionObject extends StageObject {
+    @panelTitle('变换次数')
+    public repeatCount: number | string = 'indefinite';
+    @panelTitle('时长/s')
+    public duration: number = 5;
+    @panelTitle('路径')
+    public mpath: SelectObject = new SelectObject('', []);
+    
     constructor() {
         super();
         this.hasChildren = false;
         this.name = '路径动画';
+        this.mpath.type = 'refs';
     }
 }
 

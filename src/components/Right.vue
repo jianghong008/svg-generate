@@ -14,7 +14,7 @@ import InputGroup from './form/InputGroup.vue'
 import { useSystem } from '@/store/sys';
 
 const { showMessage } = useSystem()
-const { currentObject, chooseElement, chooseChild, addColorGradient, mouse } = useStage();
+const { currentObject, chooseElement, chooseChild, addColorGradient, mouse,elements } = useStage();
 
 function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!input) {
@@ -121,7 +121,9 @@ const addColorObject = (key: string, color: string) => {
     }
 
 }
-
+const getRefsObject = (ar:SelectObject)=>{
+    return ar.setVals(elements.children)
+}
 const chooseColorObject = (color: ColorObject) => {
     currentObject.child = color;
 }
@@ -174,12 +176,6 @@ watch(mouse, () => {
         <template v-if="!mouse.arg || mouse.curElType !== ElementObjectType.group">
             <h3>属性</h3>
             <div class="right-plane" v-if="currentObject.element">
-                <div class="right-plane-item">
-                    <span>名称</span>
-                    <span>
-                        {{ currentObject.element.name }}
-                    </span>
-                </div>
                 <div v-for="k in propertys" class="right-plane-item" :key="k">
                     <template v-if="typeof k === 'string' && getValue('_' + k)">
                         <span>{{ getValue('_' + k) }}</span>
@@ -220,9 +216,16 @@ watch(mouse, () => {
                             </option>
                         </select>
                         <!-- 下拉选项 -->
-                        <select v-else-if="(getValue(k) instanceof SelectObject)" :value="getValue(k).value"
+                        <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type==='const'" :value="getValue(k).value"
                             @change="setValue(k, $event.target, true)">
                             <option v-for="e in getValue(k).vals" :key="e.value" :selected="getValue(k).value == e.value"
+                                :value="e.value">
+                                {{ e.title }}
+                            </option>
+                        </select>
+                        <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type==='refs'" :value="getValue(k).value"
+                            @change="setValue(k, $event.target, true)">
+                            <option v-for="e in getRefsObject(getValue(k))" :key="e.value" :selected="getValue(k).value == e.value"
                                 :value="e.value">
                                 {{ e.title }}
                             </option>
@@ -257,7 +260,7 @@ watch(mouse, () => {
                                 <ul class="color-list">
                                     <li v-for="color in ColorList" :key="color.key"
                                         @click.stop="addColorObject(k, color.key)">
-                                        <img :src="color.ico" :alt="color.title">
+                                        <img :src="color.ico" :alt="color.title" :title="color.title">
                                     </li>
                                 </ul>
                             </details>

@@ -34,3 +34,5 @@ interface SelectValueObject{
     title:string;
     value:string;
 }
+
+type SelectType = 'const'|'refs';

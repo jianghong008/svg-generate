@@ -43,7 +43,7 @@ function choose_el(id: string) {
         <div class="list icons">
             <div class="icon-box" v-for="e in ElementTypes" @click="choose_type(e.key)"
                 :class="{ 'type-active': e.key === stage.mouse.curElType }">
-                <img v-if="e.key === ElementObjectType.rect" class="icon" :src="'/icons/left-icos/'+e.name+'.svg'" :alt="e.name"
+                <img class="icon" :src="'/icons/left-icos/'+e.name+'.svg'" :alt="e.name"
                     :title="e.name">
             </div>
         </div>
@@ -110,6 +110,9 @@ function choose_el(id: string) {
 .contr .list div {
     border-radius: 0.5rem;
     position: relative;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .contr .list div span {
@@ -145,5 +148,6 @@ function choose_el(id: string) {
 .icon {
     width: 100%;
     height: 100%;
+    object-fit: contain;
 }
 </style>

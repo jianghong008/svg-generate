@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PathDrawMethod,  } from '@/objects/ElementObject'
+import { PathDrawMethod, } from '@/objects/ElementObject'
 import { useStage } from '../store/stage'
-import { computed } from 'vue';
+
 const { currentObject, menus } = useStage()
 const data = {
     mouseDown: false,
@@ -9,13 +9,6 @@ const data = {
     y: 0,
     pointIndex: 0,
 }
-const canControle = computed(() => {
-    if (currentObject.element?.editPoints) {
-        return true;
-    } else {
-        return false;
-    }
-})
 
 function mousedown(e: MouseEvent, index: number) {
     e.preventDefault();
@@ -60,7 +53,7 @@ window.onmousemove = (e: MouseEvent) => {
 }
 </script>
 <template>
-    <div class="points" v-if="canControle"
+    <div class="points" v-if="currentObject.element?.editPoints === true && currentObject.element.path.length > 0"
         :style="{ left: currentObject.element?.x + 'px', top: currentObject.element?.y + 'px' }">
         <div class="points-contr">
             <span v-for="(p, i) in currentObject.element?.path" :key="i"

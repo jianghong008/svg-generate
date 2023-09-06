@@ -45,6 +45,8 @@ export interface PathDrawItem {
  * 元素组件
  */
 export class ElementObject extends StageObject {
+    @panelTitle('名称')
+    public name: string = '对象0';
     public initX = 0;
     public initY = 0;
     @panelTitle('左边')
@@ -128,7 +130,7 @@ export class RectObject extends ElementObject {
         this.initX = x;
         this.initY = y;
         this.type = ElementObjectType.rect;
-        this.name = 'rect';
+        this.name = '矩形';
     }
 }
 export class EllipseObject extends ElementObject {
@@ -145,7 +147,7 @@ export class EllipseObject extends ElementObject {
         this.initX = cx;
         this.initY = cy;
         this.type = ElementObjectType.ellipse;
-        this.name = 'ellipse';
+        this.name = '椭圆';
     }
 }
 export class TextObject extends ElementObject {
@@ -261,11 +263,13 @@ export class PathObject extends ElementObject {
  * 多边形
  */
 export class PolygonObject extends PathObject {
+    public name: string = '多边形';
     @panelTitle('边数')
     public sideCount: number = 3;
     @panelTitle('边长')
     public side: number = 80;
     public closed: boolean = true;
+    public editPoints: boolean = false;
     get pathString() {
         if (this.sideCount < 3) {
             this.sideCount = 3;

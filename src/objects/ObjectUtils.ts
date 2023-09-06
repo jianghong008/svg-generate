@@ -293,11 +293,25 @@ export class MultipleValueListObject {
 }
 
 export class SelectObject {
+    public type:SelectType = 'const'
     public value: string = '';
     public vals: SelectValueObject[] = [];
     constructor(val: string, vals: SelectValueObject[]) {
         this.value = val;
         this.vals = vals;
+    }
+    public setVals(ar: StageObject[]|null|undefined) {
+        this.vals = [];
+        if(!ar){
+            return
+        }
+        for (const so of ar) {
+            this.vals.push({
+                title: so.name,
+                value: so.id,
+            })
+        }
+        return this.vals;
     }
 }
 /**
