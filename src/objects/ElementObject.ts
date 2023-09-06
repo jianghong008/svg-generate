@@ -27,6 +27,7 @@ export enum ElementObjectType {
     linearGradient,
     radialGradient,
     filter,
+    polygon,
 }
 export enum PathDrawMethod {
     M = 'M',
@@ -63,7 +64,7 @@ export class ElementObject extends StageObject {
     public path: PathDrawItem[] = [];
     @panelTitle('变换')
     public transform: TransformObject = new TransformObject();
-    constructor(){
+    constructor() {
         super();
         this.transform.parent = this;
     }
@@ -168,6 +169,7 @@ export class PathObject extends ElementObject {
     public closed: boolean = false;
     @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
+    public editPoints: boolean = true;
     constructor(startX: number, startY: number) {
         super();
         this.x = startX;
@@ -251,6 +253,43 @@ export class PathObject extends ElementObject {
         })
     }
 }
+/**
+ * 多边形
+ */
+export class PolygonObject extends PathObject {
+    @panelTitle('边数')
+    public sideCount: number = 3;
+    @panelTitle('边长')
+    public side: number = 80;
+    public closed: boolean = true;
+    public pathToString() {
+        if (this.sideCount < 3) {
+            this.sideCount = 3;
+        }
+        const a = 360 / this.sideCount / 180 * Math.PI;
+        const d = 360 / this.sideCount;
+        const r = Math.sin(a) * (this.side / 2);
+        const points: PathDrawItem[] = [];
+        for (let i = 0; i < 360; i += d) {
+            const ia = i / 180 * Math.PI;
+            const x = Math.cos(ia) * r;
+            const y = Math.sin(ia) * r;
+            let m = i == 0 ? PathDrawMethod.M : PathDrawMethod.L;
+            points.push({
+                method: m,
+                point: [
+                    {
+                        x,
+                        y,
+                    }
+                ]
+            })
+        }
+        this.path = points;
+        return super.pathToString()
+    }
+}
+
 /**
  * 组合器
  */

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { SvgObject } from '@/objects/StageObject';
-import { PathDrawMethod } from '@/objects/ElementObject'
+import { PathDrawMethod,  } from '@/objects/ElementObject'
 import { useStage } from '../store/stage'
 import { computed } from 'vue';
 const { currentObject, menus } = useStage()
@@ -11,7 +10,7 @@ const data = {
     pointIndex: 0,
 }
 const canControle = computed(() => {
-    if (currentObject.element && !(currentObject.element instanceof SvgObject)) {
+    if (currentObject.element?.editPoints) {
         return true;
     } else {
         return false;

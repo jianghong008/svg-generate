@@ -9,6 +9,10 @@ const ElementTypes = [
         key: ElementObjectType.rect
     },
     {
+        name: '多边形',
+        key: ElementObjectType.polygon
+    },
+    {
         name: '椭圆',
         key: ElementObjectType.ellipse
     },

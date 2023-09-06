@@ -11,7 +11,7 @@ defineProps<{
 }>()
 </script>
 <template>
-    <template v-for="el in data">
+    <g v-for="el in data" :key="el.id">
         <rect :data-id="el.id" v-if="el.type == ElementObjectType.rect" :x="el.x" :y="el.y" :width="el.getValue('width')"
             :height="el.getValue('height')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
             :stroke="el.getValue('stroke').value" :stroke-width="el.getValue('strokeWidth')"
@@ -60,7 +60,7 @@ defineProps<{
                 :stop-color="stop.getValue('stopColor')" />
         </radialGradient>
         <GroupDef :data="el" />
-    </template>
+    </g>
 </template>
 <style scoped>
 .el-active {

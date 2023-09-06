@@ -6,6 +6,7 @@ import {
     EllipseObject,
     GroupObject,
     PathObject,
+    PolygonObject,
     RectObject,
     TextObject,
     UseObject
@@ -173,6 +174,9 @@ export const useStage = defineStore('stage', () => {
             case ElementObjectType.path:
                 obj = new PathObject(x, y);
                 mouse.drawing = true;
+                break;
+            case ElementObjectType.polygon:
+                obj = new PolygonObject(x, y);
                 break;
             case ElementObjectType.ellipse:
                 obj = new EllipseObject(x, y);

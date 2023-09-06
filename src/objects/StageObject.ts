@@ -19,6 +19,7 @@ export class StageObject {
     public parent: StageObject | null = null
     public transform: any;
     public filters: FilterObject[] = [];
+    public editPoints = false;
     constructor() {
         this.id = this.createID();
     }
