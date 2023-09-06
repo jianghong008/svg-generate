@@ -68,10 +68,14 @@ export class ElementObject extends StageObject {
         super();
         this.transform.parent = this;
     }
-    pathToString() {
-        let s = ''
-        for (let index = 0; index < this.path.length; index++) {
-            const item = this.path[index];
+    get pathString(){
+        return this.pathToString();
+    }
+    pathToString(path: PathDrawItem[] = []) {
+        let s = '';
+        const ar = path.length > 0 ? path : this.path;
+        for (let index = 0; index < ar.length; index++) {
+            const item = ar[index];
             if (item.method === PathDrawMethod.Z) {
                 s += item.method;
             } else {
@@ -262,7 +266,7 @@ export class PolygonObject extends PathObject {
     @panelTitle('边长')
     public side: number = 80;
     public closed: boolean = true;
-    public pathToString() {
+    get pathString() {
         if (this.sideCount < 3) {
             this.sideCount = 3;
         }
@@ -277,16 +281,10 @@ export class PolygonObject extends PathObject {
             let m = i == 0 ? PathDrawMethod.M : PathDrawMethod.L;
             points.push({
                 method: m,
-                point: [
-                    {
-                        x,
-                        y,
-                    }
-                ]
+                point: [{x,y}]
             })
         }
-        this.path = points;
-        return super.pathToString()
+        return super.pathToString(points);
     }
 }
 

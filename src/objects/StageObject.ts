@@ -23,6 +23,12 @@ export class StageObject {
     constructor() {
         this.id = this.createID();
     }
+    /**
+     * 路径字符描述
+     */
+    get pathString(){
+        return '';
+    }
     createID() {
         let str = '';
         for (let i = 0; i < 8; i++) {

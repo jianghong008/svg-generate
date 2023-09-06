@@ -5,23 +5,23 @@ import { useStage } from '../store/stage'
 const stage = useStage()
 const ElementTypes = [
     {
-        name: '矩形',
+        name: 'rect',
         key: ElementObjectType.rect
     },
     {
-        name: '多边形',
+        name: 'polygon',
         key: ElementObjectType.polygon
     },
     {
-        name: '椭圆',
+        name: 'ellipse',
         key: ElementObjectType.ellipse
     },
     {
-        name: '路径',
+        name: 'path',
         key: ElementObjectType.path
     },
     {
-        name: '文本',
+        name: 'text',
         key: ElementObjectType.text
     },
 
@@ -43,21 +43,17 @@ function choose_el(id: string) {
         <div class="list icons">
             <div class="icon-box" v-for="e in ElementTypes" @click="choose_type(e.key)"
                 :class="{ 'type-active': e.key === stage.mouse.curElType }">
-                <img v-if="e.key === ElementObjectType.rect" class="icon" src="../assets/left-icos/rect.svg" alt="rect"
+                <img v-if="e.key === ElementObjectType.rect" class="icon" :src="'/icons/left-icos/'+e.name+'.svg'" :alt="e.name"
                     :title="e.name">
-                <img v-else-if="e.key === ElementObjectType.ellipse" class="icon" src="../assets/left-icos/ellipse.svg"
-                    alt="ellipse" :title="e.name">
-                <img v-else-if="e.key === ElementObjectType.path" class="icon" src="../assets/left-icos/path.svg" alt="path"
-                    :title="e.name">
-                <img v-else class="icon" src="../assets/left-icos/text.svg" alt="text" :title="e.name">
             </div>
         </div>
         <h3>扩展</h3>
         <div class="list">
-            <div v-for="e in stage.elements.defs" :class="{ 'type-active': e.type === stage.mouse.curElType&&e.id===stage.mouse.arg }"
+            <div v-for="e in stage.elements.defs"
+                :class="{ 'type-active': e.type === stage.mouse.curElType && e.id === stage.mouse.arg }"
                 v-show="(e instanceof GroupObject)">
                 <span @click="choose_type(e.type, e.id)">{{ e.name }}</span>
-                <img src="../assets/left-icos/del.svg" alt="del" @click="stage.removeDefs(e.id)">
+                <img src="/icons/left-icos/del.svg" alt="del" @click="stage.removeDefs(e.id)">
             </div>
         </div>
         <h3>大纲</h3>
@@ -68,7 +64,7 @@ function choose_el(id: string) {
             </div>
             <div v-for="e in stage.elements.children" :class="{ 'el-active': e.id === stage.currentObject.element?.id }">
                 <span @click="choose_el(e.id)">{{ e.name }}</span>
-                <img src="../assets/left-icos/del.svg" alt="del" @click="stage.removeElement(e.id)">
+                <img src="/icons/left-icos/del.svg" alt="del" @click="stage.removeElement(e.id)">
             </div>
         </div>
     </div>
@@ -81,10 +77,12 @@ function choose_el(id: string) {
     padding: 1rem 0.5rem;
     text-align: left;
 }
-.left h3{
+
+.left h3 {
     color: #838383;
     font-size: 0.9rem;
 }
+
 .type-active {
     background-color: #069adf;
 }
@@ -134,13 +132,16 @@ function choose_el(id: string) {
 .contr .list div:hover img:not(.icon) {
     display: inline-block;
 }
-.icon-box{
+
+.icon-box {
     width: 1.5rem;
     height: 1.5rem;
 }
-.icon-box:hover{
+
+.icon-box:hover {
     background-color: #0074a6;
 }
+
 .icon {
     width: 100%;
     height: 100%;

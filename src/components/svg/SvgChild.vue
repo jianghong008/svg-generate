@@ -29,10 +29,11 @@ defineProps<{
             <SvgEffect :data="el.children" />
         </ellipse>
         <path :data-id="el.id" v-else-if="el.type == ElementObjectType.path"
-            :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :x="el.x" :y="el.y" :d="el.pathToString()"
-            :stroke="el.getValue('stroke').value" :stroke-width="el.getValue('strokeWidth')"
-            :fill="el.getValue('fill').value" :transform-origin="el.transform.origin"
-            :transform="el.transform.transformToString()" :fill-opacity="el.getValue('fillOpacity')">
+            :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :x="el.x" :y="el.y"
+            :d="el.pathString" :stroke="el.getValue('stroke').value"
+            :stroke-width="el.getValue('strokeWidth')" :fill="el.getValue('fill').value"
+            :transform-origin="el.transform.origin" :transform="el.transform.transformToString()"
+            :fill-opacity="el.getValue('fillOpacity')">
             <SvgEffect :data="el.children" />
         </path>
         <text :data-id="el.id" v-else-if="el.type == ElementObjectType.text" :x="el.x" :y="el.y"
