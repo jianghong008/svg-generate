@@ -300,18 +300,18 @@ export class SelectObject {
         this.value = val;
         this.vals = vals;
     }
-    public setVals(ar: StageObject[]|null|undefined) {
-        this.vals = [];
+    public getVals(ar: StageObject[]|null|undefined) {
+        const vals = [];
         if(!ar){
             return
         }
         for (const so of ar) {
-            this.vals.push({
+            vals.push({
                 title: so.name,
                 value: so.id,
             })
         }
-        return this.vals;
+        return vals;
     }
 }
 /**

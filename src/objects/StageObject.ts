@@ -180,6 +180,10 @@ export class AnimateMotionObject extends StageObject {
         this.name = '路径动画';
         this.mpath.type = 'refs';
     }
+
+    public set new_mpath(t: string) {
+        this.mpath.value = t;
+    }
 }
 
 export class AnimateTransformObject extends StageObject {

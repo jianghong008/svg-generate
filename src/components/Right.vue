@@ -14,18 +14,19 @@ import InputGroup from './form/InputGroup.vue'
 import { useSystem } from '@/store/sys';
 
 const { showMessage } = useSystem()
-const { currentObject, chooseElement, chooseChild, addColorGradient, mouse,elements } = useStage();
+const { currentObject, chooseElement, chooseChild, addColorGradient, mouse, elements,useObject } = useStage();
 
 function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!input) {
         return
     }
     const val = isString ? ((input as any).value) : Number((input as any).value);
+
     if (!currentObject.element) {
         return
     }
     if (Reflect.get(currentObject.element, key) instanceof SelectObject) {
-        Reflect.set(currentObject.element, 'new_' + key, val)
+        Reflect.set(currentObject.element, 'new_' + key, val);
         return
     }
     if ((input as any).type === 'checkbox') {
@@ -121,8 +122,14 @@ const addColorObject = (key: string, color: string) => {
     }
 
 }
-const getRefsObject = (ar:SelectObject)=>{
-    return ar.setVals(elements.children)
+const getRefsObject = (ar: SelectObject) => {
+    const temp = []
+    for (const o of elements.children) {
+        if (o.id != currentObject.element?.parent?.id) {
+            temp.push(o);
+        }
+    }
+    return ar.getVals(temp)
 }
 const chooseColorObject = (color: ColorObject) => {
     currentObject.child = color;
@@ -216,17 +223,18 @@ watch(mouse, () => {
                             </option>
                         </select>
                         <!-- 下拉选项 -->
-                        <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type==='const'" :value="getValue(k).value"
-                            @change="setValue(k, $event.target, true)">
+                        <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type === 'const'"
+                            :value="getValue(k).value" @change="setValue(k, $event.target, true)">
                             <option v-for="e in getValue(k).vals" :key="e.value" :selected="getValue(k).value == e.value"
                                 :value="e.value">
                                 {{ e.title }}
                             </option>
                         </select>
-                        <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type==='refs'" :value="getValue(k).value"
-                            @change="setValue(k, $event.target, true)">
-                            <option v-for="e in getRefsObject(getValue(k))" :key="e.value" :selected="getValue(k).value == e.value"
-                                :value="e.value">
+                        <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type === 'refs'"
+                            :value="getValue(k).value" @change="setValue(k, $event.target, true)"
+                            :title="getValue(k).value">
+                            <option v-for="e in getRefsObject(getValue(k))" :key="e.value"
+                                :selected="getValue(k).value == e.value" :value="e.value">
                                 {{ e.title }}
                             </option>
                         </select>

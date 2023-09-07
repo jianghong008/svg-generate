@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { StageObject, AnimateObject, AnimateTransformObject } from '@/objects/StageObject';
+import { StageObject, AnimateObject, AnimateTransformObject, AnimateMotionObject } from '@/objects/StageObject';
 
 defineProps<{
     data: StageObject[]
@@ -12,5 +12,8 @@ defineProps<{
         <animateTransform v-else-if="(eo instanceof AnimateTransformObject)" attributeName="transform" attributeType="XML"
             :type="eo.transformType.value" :from="eo.fromValue" :to="eo.toValue" :dur="eo.duration + 's'"
             :repeatCount="eo.repeatCount" />
+        <animateMotion v-else-if="(eo instanceof AnimateMotionObject)" :dur="eo.duration + 's'" :repeatCount="eo.repeatCount">
+            <mpath :href="'#'+eo.mpath.value"/>
+        </animateMotion>
     </template>
 </template>

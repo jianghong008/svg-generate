@@ -325,6 +325,15 @@ export const useStage = defineStore('stage', () => {
 
     }
 
+    const useObject = (id:string)=>{
+        elements.children.forEach((o,i)=>{
+            if(id===o.id){
+                elements.defs.push(o);
+                elements.children.splice(i,1);
+            }
+        })
+    }
+
     return {
         elements,
         mouse,
@@ -343,5 +352,6 @@ export const useStage = defineStore('stage', () => {
         removeDefs,
         chooseChild,
         addColorGradient,
+        useObject,
     }
 })

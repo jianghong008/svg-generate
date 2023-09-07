@@ -11,7 +11,7 @@ defineProps<{
 }>()
 </script>
 <template>
-    <g v-for="el in data" :key="el.id">
+    <template v-for="el in data" :key="el.id">
         <rect :data-id="el.id" v-if="el.type == ElementObjectType.rect" :x="el.x" :y="el.y" :width="el.getValue('width')"
             :height="el.getValue('height')" :class="{ 'el-active': el.id === stage.currentObject.element?.id }"
             :stroke="el.getValue('stroke').value" :stroke-width="el.getValue('strokeWidth')"
@@ -28,7 +28,7 @@ defineProps<{
             :transform="el.transform.transformToString()">
             <SvgEffect :data="el.children" />
         </ellipse>
-        <path :data-id="el.id" v-else-if="el.type == ElementObjectType.path"
+        <path :id="el.id" :data-id="el.id" v-else-if="el.type == ElementObjectType.path"
             :class="{ 'el-active': el.id === stage.currentObject.element?.id }" :x="el.x" :y="el.y"
             :d="el.pathString" :stroke="el.getValue('stroke').value"
             :stroke-width="el.getValue('strokeWidth')" :fill="el.getValue('fill').value"
@@ -61,7 +61,7 @@ defineProps<{
                 :stop-color="stop.getValue('stopColor')" />
         </radialGradient>
         <GroupDef :data="el" />
-    </g>
+    </template>
 </template>
 <style scoped>
 .el-active {
