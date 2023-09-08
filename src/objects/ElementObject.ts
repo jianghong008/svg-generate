@@ -61,7 +61,6 @@ export class ElementObject extends StageObject {
     public fill: ColorObject = new SvgColor('rgba(0,0,0,0)');
     @panelTitle('填充度')
     public fillOpacity: number = 1;
-    public filter: string = FilterObject.none();
     public fillRule: FillRule = FillRule.NONZERO;
     public path: PathDrawItem[] = [];
     @panelTitle('变换')
@@ -123,6 +122,9 @@ export class RectObject extends ElementObject {
     public ry = 0;
     @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
+    @panelTitle('滤镜')
+    public filters = new StageObecjArray<FilterObject>;
+
     constructor(x: number, y: number) {
         super();
         this.x = x;

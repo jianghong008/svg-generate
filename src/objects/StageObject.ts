@@ -1,5 +1,12 @@
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
-import { AnimateAttribute, EffctEnum, FilterObject, MultipleValueListObject, MultipleValueObject, SelectObject, StageObecjArray, TransformType, panelTitle } from "./ObjectUtils";
+import {
+    AnimateAttribute,
+    EffctEnum, FilterObject,
+    MultipleValueListObject,
+    MultipleValueObject,
+    SelectObject, StageObecjArray,
+    TransformType, panelTitle
+} from "./ObjectUtils";
 /**
  * 舞台组件
  */
@@ -173,7 +180,7 @@ export class AnimateMotionObject extends StageObject {
     public duration: number = 5;
     @panelTitle('路径')
     public mpath: SelectObject = new SelectObject('', []);
-    
+
     constructor() {
         super();
         this.hasChildren = false;

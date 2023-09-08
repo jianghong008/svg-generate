@@ -14,7 +14,7 @@ import InputGroup from './form/InputGroup.vue'
 import { useSystem } from '@/store/sys';
 
 const { showMessage } = useSystem()
-const { currentObject, chooseElement, chooseChild, addColorGradient, mouse, elements,useObject } = useStage();
+const { currentObject, chooseElement, chooseChild, addColorGradient, mouse, elements } = useStage();
 
 function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!input) {

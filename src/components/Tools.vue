@@ -15,8 +15,8 @@ function exportSvg(){
 </script>
 <template>
     <div class="tools-box contr">
-        <span @click="copySvg">复制</span>
-        <span @click="exportSvg">导出</span>
+        <button @click="copySvg">复制</button>
+        <button @click="exportSvg">导出</button>
     </div>
 </template>
 <style lang="css" scoped>
@@ -28,5 +28,19 @@ function exportSvg(){
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+    align-items: center;
+}
+.tools-box>button{
+    background: none;
+    outline: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    color: #fff;
+}
+
+.tools-box>button:hover{
+    background: #3d3d3d;
+    outline: none;
+    border: none;
 }
 </style>

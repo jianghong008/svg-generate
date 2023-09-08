@@ -109,18 +109,18 @@ export enum EffctEnum {
 }
 
 export const EffctEnumObjects = [
+    // {
+    //     title: '路径动画',
+    //     key: EffctEnum.animateMotion
+    // },
+    {
+        title: '变换动画',
+        key: EffctEnum.animateTransform
+    },
     {
         title: '通用动画',
         key: EffctEnum.animate
     },
-    {
-        title: '路径动画',
-        key: EffctEnum.animateMotion
-    },
-    {
-        title: '变换动画',
-        key: EffctEnum.animateTransform
-    }
 ]
 
 export class StageObecjArray<T> extends Array<T>{
