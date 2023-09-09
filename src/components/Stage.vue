@@ -3,6 +3,8 @@ import StagePoints from './StagePoints.vue'
 import SvgEl from './svg/SvgEl.vue'
 import StageMenu from './StageMenu.vue';
 import { useStage } from '../store/stage'
+import { onMounted, onUnmounted } from 'vue';
+import { deleteCurrentObject } from '@/objects/stagaeUtils';
 
 const stage = useStage()
 const multipleRect = stage.mouse.multipleRect
@@ -20,9 +22,9 @@ function box_mouseup() {
             //菜单
             stage.menus.x = stage.mouse.x;
             stage.menus.y = stage.mouse.y;
-            stage.menus.show = true; 
+            stage.menus.show = true;
         }
-        
+
     }
 }
 
@@ -41,7 +43,22 @@ function mousemove(e: MouseEvent) {
         stage.chooseAllElement();
     }
 }
-
+function onkeydown(e: KeyboardEvent) {
+    switch (e.key.toLowerCase()) {
+        case 'delete':
+            deleteCurrentObject(stage.currentObject.element, stage.elements,stage.mouse.arg);
+            stage.currentObject.element = null;
+            stage.mouse.arg = null;
+            stage.mouse.curElType = 0;
+            break
+    }
+}
+onMounted(() => {
+    window.addEventListener('keydown', onkeydown);
+})
+onUnmounted(() => {
+    window.removeEventListener('keydown', onkeydown);
+})
 </script>
 <template>
     <div class="stage-warp" @mousemove="mousemove" @mouseup="box_mouseup">

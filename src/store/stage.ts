@@ -14,7 +14,7 @@ import {
 import { StageObject, SvgObject } from '@/objects/StageObject';
 import { UseObjectValue } from '@/objects/ObjectUtils';
 import { ColorObject, SvgColor } from '@/objects/Color';
-type StageObjectType = {
+export type CurrStageObjectType = {
     element: null | StageObject,
     last: null | StageObject,
     effect: null | StageObject,
@@ -44,7 +44,7 @@ export const useStage = defineStore('stage', () => {
     /**
      * 当前选择
      */
-    const currentObject = reactive<StageObjectType>({
+    const currentObject = reactive<CurrStageObjectType>({
         element: null,
         last: null,
         effect: null,

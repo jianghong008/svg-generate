@@ -53,7 +53,6 @@ function choose_el(id: string) {
                 :class="{ 'type-active': e.type === stage.mouse.curElType && e.id === stage.mouse.arg }"
                 v-show="(e instanceof GroupObject)">
                 <span @click="choose_type(e.type, e.id)">{{ e.name }}</span>
-                <img src="/icons/left-icos/del.svg" alt="del" @click="stage.removeDefs(e.id)">
             </div>
         </div>
         <h3>大纲</h3>
@@ -64,7 +63,6 @@ function choose_el(id: string) {
             </div>
             <div v-for="e in stage.elements.children" :class="{ 'el-active': e.id === stage.currentObject.element?.id }">
                 <span @click="choose_el(e.id)">{{ e.name }}</span>
-                <img src="/icons/left-icos/del.svg" alt="del" @click="stage.removeElement(e.id)">
             </div>
         </div>
     </div>
@@ -117,7 +115,7 @@ function choose_el(id: string) {
 
 .contr .list div span {
     padding: 0.2rem 1rem;
-    width: 5em;
+    width: 100%;
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
