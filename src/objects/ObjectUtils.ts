@@ -20,7 +20,7 @@ export function panelTitle(title: string) {
 /**
  * 滤镜
  */
-export class FilterObject {
+export class Filters {
     static blur(val: number) {
         return `blur(${val}px)`;
     }
@@ -34,7 +34,7 @@ export class FilterObject {
         return `drop-shadow(${x}px ${y}px ${blur}px ${color})`;
     }
     static grayscale(val: number) {
-        return `grayscale(${val})`;
+        return `grayscale(${val}%)`;
     }
     /**
      * 色相旋转
@@ -139,7 +139,7 @@ export class AnimateAttribute {
         return this._val;
     }
 
-    public static GetAttributs(so?: StageObject | null) {
+    public static GetAttributs(so:any) {
         if (!so) {
             return []
         }
@@ -293,16 +293,16 @@ export class MultipleValueListObject {
 }
 
 export class SelectObject {
-    public type:SelectType = 'const'
+    public type: SelectType = 'const'
     public value: string = '';
     public vals: SelectValueObject[] = [];
     constructor(val: string, vals: SelectValueObject[]) {
         this.value = val;
         this.vals = vals;
     }
-    public getVals(ar: StageObject[]|null|undefined) {
+    public getVals(ar: StageObject[] | null | undefined) {
         const vals = [];
-        if(!ar){
+        if (!ar) {
             return
         }
         for (const so of ar) {
