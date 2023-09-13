@@ -8,9 +8,10 @@ const data = {
     x: 0,
     y: 0,
     pointIndex: 0,
+    pointNo:0,
 }
 
-function mousedown(e: MouseEvent, index: number) {
+function mousedown(e: MouseEvent, index: number, no: number) {
     e.preventDefault();
     menus.arg = -1;
     if (e.button == 0) {
@@ -18,17 +19,18 @@ function mousedown(e: MouseEvent, index: number) {
         data.x = e.x;
         data.y = e.y;
         data.pointIndex = index;
+        data.pointNo = no
     } else if (e.button == 2 && currentObject.element) {
         const el = currentObject.element;
         if (!el || !el.path[data.pointIndex]) {
             return
         }
         menus.show = true;
-        const x = el.path[index].point[0].x
-        const y = el.path[index].point[0].y
+        const x = el.path[index].point[no].x
+        const y = el.path[index].point[no].y
         menus.x = currentObject.element.x + x;
         menus.y = currentObject.element.y + y;
-        menus.arg = index;
+        menus.arg = index + '_' + no;
     }
 
 }
@@ -48,17 +50,20 @@ window.onmousemove = (e: MouseEvent) => {
         return
     }
 
-    el.path[data.pointIndex].point[0].x += e.movementX;
-    el.path[data.pointIndex].point[0].y += e.movementY;
+    el.path[data.pointIndex].point[data.pointNo].x += e.movementX;
+    el.path[data.pointIndex].point[data.pointNo].y += e.movementY;
 }
 </script>
 <template>
     <div class="points" v-if="currentObject.element?.editPoints === true && currentObject.element.path.length > 0"
         :style="{ left: currentObject.element?.x + 'px', top: currentObject.element?.y + 'px' }">
         <div class="points-contr">
-            <span v-for="(p, i) in currentObject.element?.path" :key="i"
-                :style="{ left: (p.point[0].x - 4) + 'px', top: (p.point[0].y - 4) + 'px', display: p.method === PathDrawMethod.Z ? 'none' : 'block' }"
-                :draggable="false" @mousedown="mousedown($event, i)"></span>
+            <template v-for="(ps, i) in currentObject.element?.path">
+                <span v-for="(p, ii) in ps.point" :key="ii"
+                    :style="{ left: (p.x - 4) + 'px', top: (p.y - 4) + 'px', display: ps.method === PathDrawMethod.Z ? 'none' : 'block' }"
+                    :draggable="false" @mousedown="mousedown($event, i, ii)"></span>
+            </template>
+
         </div>
     </div>
 </template>
