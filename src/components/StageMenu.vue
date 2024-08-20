@@ -3,7 +3,7 @@ import { ElementObject, PathDrawMethod, UseObject } from '@/objects/ElementObjec
 import { SvgObject } from '@/objects/StageObject';
 import { useStage } from '@/store/stage'
 import { reactive, ref, watch } from 'vue';
-const { menus, currentObject, removeElement, groupObjects,ungroupObject } = useStage()
+const { menus, currentObject, removeElement, groupObjects, ungroupObject } = useStage()
 const list = reactive([
     {
         title: '删除',
@@ -62,7 +62,7 @@ watch(menus, () => {
         list[2].active = true;
         list[2].show = true;
     }
-   
+
 })
 function resetMenus() {
     for (const m of list) {
@@ -82,21 +82,22 @@ function menuAction(index: number) {
     } else if (index == 1) {
         //打组
         groupObjects();
-    }else if (index == 2) {
+    } else if (index == 2) {
         //解组
         ungroupObject(currentObject.element?.id);
     } else if (index == 3) {
-        //转换点
+        //平滑点
         const point = currentObject.element?.path[menus.arg];
         if (!point) {
             return
         }
-        point.method = PathDrawMethod.Q;
-        const p1 = { x: point.point[0].x, y: point.point[0].y };
+        point.method = PathDrawMethod.C;
+        const p1 = { x: point.point[0].x - 10, y: point.point[0].y - 10 };
         const p2 = { x: point.point[0].x, y: point.point[0].y };
-        point.point = [p1, p2];
+        const p3 = { x: point.point[0].x + 10, y: point.point[0].y + 10 };
+        point.point = [p1, p2, p3];
     } else if (index == 4) {
-        //转换点
+        //直角点
         const point = currentObject.element?.path[menus.arg];
         if (!point) {
             return
@@ -110,7 +111,8 @@ function menuAction(index: number) {
 <template>
     <div class="menu-box" v-show="menus.show" :style="{ top: menus.y + 'px', left: menus.x + 'px' }">
         <ol ref="menuBox" class="menu">
-            <li v-for="(m, i) in list" :key="i" v-show="m.show" :class="{ 'disabled': !m.active }" @click="menuAction(i)">
+            <li v-for="(m, i) in list" :key="i" v-show="m.show" :class="{ 'disabled': !m.active }"
+                @click="menuAction(i)">
                 {{ m.title }}
             </li>
         </ol>

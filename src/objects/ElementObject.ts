@@ -246,7 +246,7 @@ export class PathObject extends ElementObject {
      */
     cubicCurveTo(contrX1: number, contrY1: number, contrX2: number, contrY2: number, endX: number, endY: number) {
         this.path.push({
-            method: PathDrawMethod.Q,
+            method: PathDrawMethod.C,
             point: [{
                 x: contrX1,
                 y: contrY1

@@ -4,15 +4,15 @@ export const ColorList = [
     {
         title: '单色',
         key: 'color',
-        ico:'/icons/black-color.svg'
+        ico:'/svg-generate/icons/black-color.svg'
     }, {
         title: '线性',
         key: 'linear',
-        ico:'/icons/linear-gradient.svg'
+        ico:'/svg-generate/icons/linear-gradient.svg'
     }, {
         title: '径向',
         key: 'radial',
-        ico:'/icons/radial-gradient.svg'
+        ico:'/svg-generate/icons/radial-gradient.svg'
     }
 ]
 /**
