@@ -10,6 +10,7 @@ const data = {
     y: 0,
     pointIndex: 0,
     contrIndex: -1,
+    pointNo:0,
 }
 
 function mousedown(e: MouseEvent, index: number, contr = -1) {
@@ -21,17 +22,18 @@ function mousedown(e: MouseEvent, index: number, contr = -1) {
         data.y = e.y;
         data.pointIndex = index;
         data.contrIndex = contr
+        data.pointNo = no
     } else if (e.button == 2 && currentObject.element) {
         const el = currentObject.element;
         if (!el || !el.path[data.pointIndex]) {
             return
         }
         menus.show = true;
-        const x = el.path[index].point[0].x
-        const y = el.path[index].point[0].y
+        const x = el.path[index].point[no].x
+        const y = el.path[index].point[no].y
         menus.x = currentObject.element.x + x;
         menus.y = currentObject.element.y + y;
-        menus.arg = index;
+        menus.arg = index + '_' + no;
     }
 
 }

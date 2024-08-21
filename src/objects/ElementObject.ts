@@ -8,8 +8,8 @@
  */
 
 import { ColorObject, SvgColor } from "./Color";
-import { FilterObject, StageObecjArray, UseObjectValue, panelTitle, } from "./ObjectUtils";
-import { StageObject, TransformObject } from "./StageObject";
+import {  SelectObject, StageObecjArray, UseObjectValue, panelTitle, } from "./ObjectUtils";
+import { StageObject, TransformObject,FilterMultipleValueObject } from "./StageObject";
 export enum FillRule {
     NONZERO = 'nonzero',
     EVENODD = 'evenodd'
@@ -63,10 +63,18 @@ export class ElementObject extends StageObject {
     public fillOpacity: number = 1;
     public fillRule: FillRule = FillRule.NONZERO;
     public path: PathDrawItem[] = [];
+    @panelTitle('滤镜')
+    public filters = new FilterMultipleValueObject();
     @panelTitle('变换')
     public transform: TransformObject = new TransformObject();
+    // @panelTitle('剪切')
+    public clipPath: SelectObject = new SelectObject('', []);
+    public set new_clipPath(t: string) {
+        this.clipPath.value = t;
+    }
     constructor() {
         super();
+        this.clipPath.type = 'refs';
         this.transform.parent = this;
     }
     get pathString(){
@@ -122,9 +130,6 @@ export class RectObject extends ElementObject {
     public ry = 0;
     @panelTitle('动画')
     public children = new StageObecjArray<StageObject>;
-    @panelTitle('滤镜')
-    public filters = new StageObecjArray<FilterObject>;
-
     constructor(x: number, y: number) {
         super();
         this.x = x;

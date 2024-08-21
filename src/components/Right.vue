@@ -6,10 +6,11 @@ import { ColorObject, ColorList, RadialGradient, LinearGradient } from '@/object
 import {
     EffctEnum, StageObecjArray,
     AnimateAttribute, MultipleValueObject,
-    MultipleValueListObject, SelectObject
+    MultipleValueListObject, SelectObject,
+
 } from '@/objects/ObjectUtils'
 import { ElementObject, ElementObjectType } from '@/objects/ElementObject'
-import { StageObject } from '@/objects/StageObject';
+import { FilterMultipleValueObject } from '@/objects/StageObject';
 import InputGroup from './form/InputGroup.vue'
 import { useSystem } from '@/store/sys';
 
@@ -25,6 +26,7 @@ function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!currentObject.element) {
         return
     }
+
     if (Reflect.get(currentObject.element, key) instanceof SelectObject) {
         Reflect.set(currentObject.element, 'new_' + key, val);
         return
@@ -45,6 +47,7 @@ function setObjectVal(key: string, val: string) {
     if (!currentObject.element) {
         return
     }
+
     const old = Reflect.get(currentObject.element, key);
     if (old === undefined || old === null) {
         return
@@ -53,7 +56,10 @@ function setObjectVal(key: string, val: string) {
         //动画属性
         Reflect.set(currentObject.element, key, new AnimateAttribute(val));
     }
-
+    if (old instanceof FilterMultipleValueObject) {
+        old.select.value = val;
+        old.setMultiple(val);
+    }
 }
 const propertys = computed(() => {
     if (!currentObject.element) {
@@ -89,7 +95,7 @@ const addEffect = (key: string) => {
         showMessage(error.message)
     }
 }
-const chooseEffect = (s?: StageObject) => {
+const chooseEffect = (s?: any) => {
     if (!s) {
         return
     }
@@ -125,10 +131,11 @@ const addColorObject = (key: string, color: string) => {
 const getRefsObject = (ar: SelectObject) => {
     const temp = []
     for (const o of elements.children) {
-        if (o.id != currentObject.element?.parent?.id) {
+        if (o.id != currentObject.element?.parent?.id && o.id != currentObject.element?.id) {
             temp.push(o);
         }
     }
+    
     return ar.getVals(temp)
 }
 const chooseColorObject = (color: ColorObject) => {
@@ -192,7 +199,21 @@ watch(mouse, () => {
                             @change="setValue(k, $event.target, true)" :value="getValue(k)">
                         <input v-else-if="typeof getValue(k) === 'boolean'" type="checkbox"
                             @change="setValue(k, $event.target, true)" :checked="getValue(k)">
+                        <!-- 滤镜 -->
+                        <div class="input-panel" v-else-if="(getValue(k) instanceof FilterMultipleValueObject)">
+                            <details>
+                                <summary></summary>
+                                <select :value="getValue(k).select.value" @change="setValue(k, $event.target, true)">
+                                    <option v-for="e in getValue(k).select.vals" :key="e.value" :value="e.value">
+                                        {{ e.title }}
+                                    </option>
+                                </select>
+                                <p>
+                                    <InputGroup :data="getValue(k).multiple.vals" />
+                                </p>
+                            </details>
 
+                        </div>
                         <!-- 动画 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof StageObecjArray)">
                             <details>

@@ -202,7 +202,7 @@ export const useStage = defineStore('stage', () => {
         }
 
         obj.name = obj.name + count;
-        obj.parent = elements;
+        obj.parent = RootTageObject;
         elements.children.push(obj);
         if (mouse.curElType !== ElementObjectType.path) {
             endDraw();
@@ -231,9 +231,9 @@ export const useStage = defineStore('stage', () => {
         }
         currentObject.elements.forEach((el) => {
             //打组
-            group.children.push(el);
+            group.children.push(el as StageObject);
             //删除舞台元素
-            removeElement(el);
+            removeElement(el as StageObject);
         })
         currentObject.elements = [];
         //转存

@@ -5,6 +5,7 @@ import StageMenu from './StageMenu.vue';
 import { useStage } from '../store/stage'
 import { onMounted, onUnmounted } from 'vue';
 import { deleteCurrentObject } from '@/objects/stagaeUtils';
+import { StageObject, SvgObject } from '@/objects/StageObject';
 
 const stage = useStage()
 const multipleRect = stage.mouse.multipleRect
@@ -46,7 +47,7 @@ function mousemove(e: MouseEvent) {
 function onkeydown(e: KeyboardEvent) {
     switch (e.key.toLowerCase()) {
         case 'delete':
-            deleteCurrentObject(stage.currentObject.element, stage.elements,stage.mouse.arg);
+            deleteCurrentObject(stage.currentObject.element as StageObject, stage.elements as SvgObject ,stage.mouse.arg);
             stage.currentObject.element = null;
             stage.mouse.arg = null;
             stage.mouse.curElType = 0;

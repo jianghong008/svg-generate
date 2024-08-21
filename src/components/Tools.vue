@@ -2,14 +2,15 @@
 import { exportObeject,copyObeject } from '@/objects/ObjectUtils'
 import { useStage } from '../store/stage';
 import { useSystem } from '@/store/sys';
+import { SvgObject } from '@/objects/StageObject';
 const {showMessage} = useSystem()
 const stage = useStage()
 function copySvg(){
-    copyObeject(stage.elements);
+    copyObeject(stage.elements as SvgObject);
     showMessage('已复制到剪切板');
 }
 function exportSvg(){
-    exportObeject(stage.elements);
+    exportObeject(stage.elements as SvgObject);
     showMessage('生成文件成功');
 }
 </script>

@@ -4,6 +4,7 @@ import { useStage } from '@/store/stage';
 import SvgChild from './SvgChild.vue';
 
 import { onMounted, ref } from 'vue';
+import { StageObject } from '@/objects/StageObject';
 
 const stage = useStage()
 // svg按下
@@ -61,9 +62,9 @@ onMounted(() => {
     <svg ref="svgDom" :view-box="stage.elements.viewBox" :xmlns="stage.elements.xmlns" :data-id="stage.elements.id"
         :width="stage.elements.width" :height="stage.elements.height" @mousedown="mousedown">
         <defs>
-            <SvgChild :data="stage.elements.defs"/>
+            <SvgChild :data="stage.elements.defs as StageObject[]"/>
         </defs>
-        <SvgChild :data="stage.elements.children"/>
+        <SvgChild :data="stage.elements.children as StageObject[]"/>
     </svg>
 </template>
 <style scoped>

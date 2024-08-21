@@ -1,7 +1,8 @@
 import { ElementObjectType, PathDrawItem } from "./ElementObject";
 import {
     AnimateAttribute,
-    EffctEnum, FilterObject,
+    EffctEnum,
+    Filters,
     MultipleValueListObject,
     MultipleValueObject,
     SelectObject, StageObecjArray,
@@ -25,8 +26,10 @@ export class StageObject {
     public closed: boolean = false;
     public parent: StageObject | null = null
     public transform: any;
-    public filters: FilterObject[] = [];
+    public filters: FilterMultipleValueObject = new FilterMultipleValueObject;
     public editPoints = false;
+    public clipPath: SelectObject = new SelectObject('', []);
+    public keys = [];
     constructor() {
         this.id = this.createID();
     }
@@ -372,3 +375,94 @@ export class TransformObject extends MultipleValueListObject {
     }
 }
 
+export class FilterMultipleValueObject {
+    public select: SelectObject = new SelectObject('', [
+        {
+            title: '无',
+            value: ''
+        },
+        {
+            title: '模糊',
+            value: 'blur'
+        },
+        {
+            title: '灰度',
+            value: 'grayscale'
+        },
+        {
+            title: '饱和度',
+            value: 'saturate'
+        },
+        {
+            title: '透明度',
+            value: 'opacity'
+        },
+        {
+            title: '色相',
+            value: 'hueRotate'
+        }
+    ]);
+    private keys = {
+        blur: [
+            {
+                type: 'number',
+                title: 'px',
+                val: 0
+            },
+        ],
+        grayscale: [
+            {
+                type: 'number',
+                title: '%',
+                val: 0
+            },
+        ],
+        saturate: [
+            {
+                type: 'number',
+                title: '%',
+                val: 100
+            },
+        ],
+        opacity: [
+            {
+                type: 'number',
+                title: '%',
+                val: 100
+            }
+        ],
+        hueRotate: [
+            {
+                type: 'number',
+                title: 'deg',
+                val: 0
+            }
+        ]
+    }
+    public multiple = new MultipleValueObject([]);
+    public setMultiple(key: string) {
+        this.multiple.vals = Reflect.get(this.keys, key);
+    }
+    get value() {
+        let val = '';
+        switch (this.select.value) {
+            case 'blur':
+                val = Filters.blur(this.multiple.getVal('px'));
+                break
+            case 'grayscale':
+                val = Filters.grayscale(this.multiple.getVal('%'));
+                break
+            case 'saturate':
+                val = Filters.saturate(this.multiple.getVal('%'));
+                break
+            case 'opacity':
+                val = Filters.opacity(this.multiple.getVal('%'));
+                break
+            case 'hueRotate':
+                val = Filters.hueRotate(this.multiple.getVal('deg'));
+                break
+        }
+
+        return val
+    }
+}
