@@ -28,6 +28,7 @@ export enum ElementObjectType {
     radialGradient,
     filter,
     polygon,
+    clipPath
 }
 export enum PathDrawMethod {
     M = 'M',
@@ -67,7 +68,7 @@ export class ElementObject extends StageObject {
     public filters = new FilterMultipleValueObject();
     @panelTitle('变换')
     public transform: TransformObject = new TransformObject();
-    // @panelTitle('剪切')
+    @panelTitle('剪切')
     public clipPath: SelectObject = new SelectObject('', []);
     public set new_clipPath(t: string) {
         this.clipPath.value = t;
@@ -343,4 +344,10 @@ export class LinkObject extends ElementObject {
     @panelTitle('链接')
     public href: string = '';
     public type: ElementObjectType = ElementObjectType.link;
+}
+
+export class ClipPathObject extends ElementObject {
+    public name = '剪切';
+    public clipPathUnits: ClipPathObjectclipPathUnits = 'userSpaceOnUse';
+    public type: ElementObjectType = ElementObjectType.clipPath;
 }

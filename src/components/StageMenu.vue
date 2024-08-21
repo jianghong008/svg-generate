@@ -57,7 +57,7 @@ watch(menus, () => {
             list[3].show = true;
             list[4].active = true;
             list[4].show = true;
-        } else if (point.method === PathDrawMethod.Q||point.method === PathDrawMethod.C) {
+        } else if (point.method === PathDrawMethod.Q || point.method === PathDrawMethod.C) {
             list[5].active = true;
             list[5].show = true;
         }
@@ -94,7 +94,7 @@ function menuAction(index: number) {
     } else if (index == 2) {
         //解组
         ungroupObject(currentObject.element?.id);
-    } else if (index == 3&&typeof menus.arg==='string') {
+    } else if (index == 3 && typeof menus.arg === 'string') {
         //转换2次平滑点
         const arg = menus.arg.split('_')
         const [index,] = arg;
@@ -104,7 +104,7 @@ function menuAction(index: number) {
         }
         point.method = PathDrawMethod.Q;
         const p1 = { x: point.point[0].x, y: point.point[0].y };
-        const p2 = { x: point.point[0].x, y: point.point[0].y };
+        const p2 = { x: point.point[0].x + 10, y: point.point[0].y };
         point.point = [p1, p2];
     } else if (index == 4) {
         //转换3次点
@@ -115,14 +115,14 @@ function menuAction(index: number) {
             return
         }
         point.method = PathDrawMethod.C;
-        const p0 = { x: point.point[0].x-5, y: point.point[0].y-5 };
+        const p0 = { x: point.point[0].x - 10, y: point.point[0].y };
         const p1 = { x: point.point[0].x, y: point.point[0].y };
-        const p2 = { x: point.point[0].x+5, y: point.point[0].y+5 };
-        point.point = [p0,p1, p2];
+        const p2 = { x: point.point[0].x + 10, y: point.point[0].y };
+        point.point = [p0, p1, p2];
     } else if (index == 5) {
         //转换直角点
         const arg = menus.arg.split('_')
-        const [index,no] = arg;
+        const [index, no] = arg;
         const point = currentObject.element?.path[Number(index)];
         if (!point) {
             return

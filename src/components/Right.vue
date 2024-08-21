@@ -10,12 +10,12 @@ import {
 
 } from '@/objects/ObjectUtils'
 import { ElementObject, ElementObjectType } from '@/objects/ElementObject'
-import { FilterMultipleValueObject } from '@/objects/StageObject';
+import { FilterMultipleValueObject, StageObject, SvgObject } from '@/objects/StageObject';
 import InputGroup from './form/InputGroup.vue'
 import { useSystem } from '@/store/sys';
 
 const { showMessage } = useSystem()
-const { currentObject, chooseElement, chooseChild, addColorGradient, mouse, elements } = useStage();
+const { currentObject, chooseElement, chooseChild, addColorGradient, mouse, elements, useObjectForClip, removeObjectForClip } = useStage();
 
 function setValue(key: string, input: EventTarget | null, isString = false) {
     if (!input) {
@@ -28,7 +28,12 @@ function setValue(key: string, input: EventTarget | null, isString = false) {
     }
 
     if (Reflect.get(currentObject.element, key) instanceof SelectObject) {
-        Reflect.set(currentObject.element, 'new_' + key, val);
+        if (key == 'clipPath') {
+            setClipPath(key, val)
+        } else {
+            Reflect.set(currentObject.element, 'new_' + key, val);
+        }
+
         return
     }
     if ((input as any).type === 'checkbox') {
@@ -42,6 +47,19 @@ function setValue(key: string, input: EventTarget | null, isString = false) {
         }
     }
 }
+
+function setClipPath(key: string, val: string) {
+    if (!currentObject.element) {
+        return
+    }
+    if (val.trim() == '') {
+        removeObjectForClip(val)
+    } else {
+        const clip = useObjectForClip(val)
+        Reflect.set(currentObject.element, 'new_' + key, clip);
+    }
+}
+
 // 特殊类型
 function setObjectVal(key: string, val: string) {
     if (!currentObject.element) {
@@ -135,7 +153,7 @@ const getRefsObject = (ar: SelectObject) => {
             temp.push(o);
         }
     }
-    
+
     return ar.getVals(temp)
 }
 const chooseColorObject = (color: ColorObject) => {
@@ -183,7 +201,9 @@ watch(mouse, () => {
         return
     }
     timer = setTimeout(resizePreview, 1000);
+
 })
+
 </script>
 <template>
     <div class="right">
@@ -246,10 +266,11 @@ watch(mouse, () => {
                         <!-- 下拉选项 -->
                         <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type === 'const'"
                             :value="getValue(k).value" @change="setValue(k, $event.target, true)">
-                            <option v-for="e in getValue(k).vals" :key="e.value" :selected="getValue(k).value == e.value"
-                                :value="e.value">
+                            <option v-for="e in getValue(k).vals" :key="e.value"
+                                :selected="getValue(k).value == e.value" :value="e.value">
                                 {{ e.title }}
                             </option>
+
                         </select>
                         <select v-else-if="(getValue(k) instanceof SelectObject) && getValue(k).type === 'refs'"
                             :value="getValue(k).value" @change="setValue(k, $event.target, true)"
@@ -258,6 +279,7 @@ watch(mouse, () => {
                                 :selected="getValue(k).value == e.value" :value="e.value">
                                 {{ e.title }}
                             </option>
+                            <option value="">无</option>
                         </select>
                         <!-- 多值组 -->
                         <div class="input-panel" v-else-if="(getValue(k) instanceof MultipleValueListObject)">

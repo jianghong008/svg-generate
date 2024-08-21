@@ -303,7 +303,7 @@ export class SelectObject {
     public getVals(ar: StageObject[] | null | undefined) {
         const vals = [];
         if (!ar) {
-            return
+            return []
         }
         for (const so of ar) {
             vals.push({
@@ -312,6 +312,9 @@ export class SelectObject {
             })
         }
         return vals;
+    }
+    public setVals(els:SelectValueObject[]) {
+        this.vals = els
     }
 }
 /**

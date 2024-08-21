@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { PathObject } from '@/objects/ElementObject';
+import { ClipPathObject, PathObject } from '@/objects/ElementObject';
 import { useStage } from '@/store/stage';
 import SvgChild from './SvgChild.vue';
 
 import { onMounted, ref } from 'vue';
 import { StageObject } from '@/objects/StageObject';
+import ClipPath from './ClipPath.vue';
 
 const stage = useStage()
 // svg按下
@@ -64,6 +65,7 @@ onMounted(() => {
         <defs>
             <SvgChild :data="stage.elements.defs as StageObject[]"/>
         </defs>
+        <ClipPath :data="stage.elements.clipPaths as ClipPathObject[]"/>
         <SvgChild :data="stage.elements.children as StageObject[]"/>
     </svg>
 </template>

@@ -9,8 +9,7 @@ const data = {
     x: 0,
     y: 0,
     pointIndex: 0,
-    contrIndex: -1,
-    pointNo:0,
+    pointNo: -1,
 }
 
 function mousedown(e: MouseEvent, index: number, contr = -1) {
@@ -21,27 +20,49 @@ function mousedown(e: MouseEvent, index: number, contr = -1) {
         data.x = e.x;
         data.y = e.y;
         data.pointIndex = index;
-        data.contrIndex = contr
-        data.pointNo = no
+        data.pointNo = contr
+
     } else if (e.button == 2 && currentObject.element) {
         const el = currentObject.element;
         if (!el || !el.path[data.pointIndex]) {
             return
         }
         menus.show = true;
-        const x = el.path[index].point[no].x
-        const y = el.path[index].point[no].y
-        menus.x = currentObject.element.x + x;
-        menus.y = currentObject.element.y + y;
-        menus.arg = index + '_' + no;
+
+        if (contr >= 0) {
+            const x = el.path[index].point[contr].x
+            const y = el.path[index].point[contr].y
+            menus.x = currentObject.element.x + x;
+            menus.y = currentObject.element.y + y;
+            menus.arg = index + '_' + contr;
+        } else {
+            const sp = getPoints(el.path[index])
+            const x = sp.x
+            const y = sp.y
+            menus.x = currentObject.element.x + x;
+            menus.y = currentObject.element.y + y;
+            menus.arg = index + '_' + getDefaultIndex(el.path[index])
+        }
     }
 
 }
 
-const getPoints = (p:PathDrawItem) => {
-    if(p.method === PathDrawMethod.C){
+const getDefaultIndex = (p: PathDrawItem) => {
+    if (p.method === PathDrawMethod.Q) {
+        return 1
+    }else if(p.method === PathDrawMethod.C){
+        return 1
+    } else {
+        return 0
+    }
+}
+
+const getPoints = (p: PathDrawItem) => {
+    if (p.method === PathDrawMethod.Q) {
         return p.point[1]
-    }else{
+    }else if(p.method === PathDrawMethod.C){
+        return p.point[2]
+    } else {
         return p.point[0]
     }
 }
@@ -58,22 +79,31 @@ const mouseupHandler = () => {
 const mousemoveHandler = (e: MouseEvent) => {
 
     if (!data.mouseDown) {
+        document.body.style.cursor = 'default';
         return
     }
-
+    document.body.style.cursor = 'move';
     const el = currentObject.element;
     if (!el || !el.path[data.pointIndex]) {
 
         return
     }
-    if (data.contrIndex >= 0) {
-        el.path[data.pointIndex].point[data.contrIndex].x += e.movementX;
-        el.path[data.pointIndex].point[data.contrIndex].y += e.movementY;
+    if (data.pointNo >= 0) {
+        el.path[data.pointIndex].point[data.pointNo].x += e.movementX;
+        el.path[data.pointIndex].point[data.pointNo].y += e.movementY;
     } else {
-        el.path[data.pointIndex].point[0].x += e.movementX;
-        el.path[data.pointIndex].point[0].y += e.movementY;
+        const sp = getPoints(el.path[data.pointIndex])
+        sp.x += e.movementX;
+        sp.y += e.movementY;
     }
 
+}
+
+const isSubPoint = (p: PathDrawItem, index: number) => {
+    if(p.method === PathDrawMethod.Q){
+        return index != 1
+    }
+    return p.method === PathDrawMethod.C && index != 2
 }
 
 onMounted(() => {
@@ -86,11 +116,11 @@ onMounted(() => {
     <div class="points" v-if="currentObject.element?.editPoints === true && currentObject.element.path.length > 0"
         :style="{ left: currentObject.element?.x + 'px', top: currentObject.element?.y + 'px' }">
         <div class="points-contr">
-            <div class="point" v-for="(p, i) in currentObject.element?.path" :key="i"
-                :style="{ left: (getPoints(p).x - 4) + 'px', top: (getPoints(p).y - 4) + 'px', display: p.method === PathDrawMethod.Z ? 'none' : 'block' }"
+            <div class="point" v-for="(p, i) in currentObject.element?.path" :key="i" v-show="p.method !== PathDrawMethod.Z"
+                :style="{ left: (getPoints(p).x - 4) + 'px', top: (getPoints(p).y - 4) + 'px'}"
                 :draggable="false" @mousedown.self="mousedown($event, i)">
-                <div class="control" v-show="p.method === PathDrawMethod.C && ii != 1" v-for="(c, ii) in p.point" :key="ii"
-                    :draggable="false" @mousedown.stop="mousedown($event, i, ii)">
+                <div class="control" v-show="isSubPoint(p, ii)" v-for="(c, ii) in p.point" :key="ii" :draggable="false"
+                    @mousedown.stop="mousedown($event, i, ii)">
                     <span :style="{ left: (c.x - getPoints(p).x) + 'px', top: (c.y - getPoints(p).y) + 'px' }"></span>
                 </div>
             </div>
@@ -121,11 +151,11 @@ onMounted(() => {
     cursor: move;
 }
 
-.control{
+.control {
     position: relative;
 }
 
-.control>span{
+.control>span {
     position: absolute;
     width: 8px;
     height: 8px;

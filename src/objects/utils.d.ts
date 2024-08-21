@@ -36,3 +36,5 @@ interface SelectValueObject{
 }
 
 type SelectType = 'const'|'refs';
+
+type ClipPathObjectclipPathUnits = 'objectBoundingBox' | 'userSpaceOnUse'

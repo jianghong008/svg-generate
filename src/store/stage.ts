@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue';
 import {
+    ClipPathObject,
     ElementObject,
     ElementObjectType,
     EllipseObject,
@@ -325,13 +326,34 @@ export const useStage = defineStore('stage', () => {
 
     }
 
-    const useObject = (id:string)=>{
-        elements.children.forEach((o,i)=>{
-            if(id===o.id){
-                elements.defs.push(o);
-                elements.children.splice(i,1);
-            }
+    const useObjectForClip = (id: string) => {
+        const elIndex = elements.children.findIndex(el => el.id === id);
+        if (elIndex < 0) {
+            return
+        }
+        const el = elements.children[elIndex]
+        elements.children.splice(elIndex, 1);
+        const clip = new ClipPathObject();
+        clip.children.push(el as StageObject);
+        elements.clipPaths.push(clip);
+
+        return `url(#${clip.id})`;
+    }
+
+    const removeObjectForClip = (id: string) => {
+
+        const elIndex = elements.clipPaths.findIndex(el => el.id === id);
+
+        if (elIndex < 0) {
+            return
+        }
+        const el = elements.clipPaths[elIndex]
+        elements.clipPaths.splice(elIndex, 1);
+        el.children.forEach((el) => {
+            elements.children.push(el as StageObject);
         })
+        el.children = []
+        
     }
 
     return {
@@ -352,6 +374,7 @@ export const useStage = defineStore('stage', () => {
         removeDefs,
         chooseChild,
         addColorGradient,
-        useObject,
+        useObjectForClip,
+        removeObjectForClip,
     }
 })

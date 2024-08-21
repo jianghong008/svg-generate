@@ -43,7 +43,7 @@ function choose_el(id: string) {
         <div class="list icons">
             <div class="icon-box" v-for="e in ElementTypes" @click="choose_type(e.key)"
                 :class="{ 'type-active': e.key === stage.mouse.curElType }">
-                <img class="icon" :src="'./icons/left-icos/'+e.name+'.svg'" :alt="e.name"
+                <img class="icon" :src="'./svg-generate/icons/left-icos/'+e.name+'.svg'" :alt="e.name"
                     :title="e.name">
             </div>
         </div>

@@ -1,4 +1,4 @@
-import { ElementObjectType, PathDrawItem } from "./ElementObject";
+import { ClipPathObject, ElementObjectType, PathDrawItem } from "./ElementObject";
 import {
     AnimateAttribute,
     EffctEnum,
@@ -97,6 +97,7 @@ export class SvgObject extends StageObject {
     @panelTitle('高度')
     public height: number = 500;
     public defs: StageObject[] = [];
+    public clipPaths: ClipPathObject[] = [];
     constructor() {
         super();
         this.name = 'svg'
