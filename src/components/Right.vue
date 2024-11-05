@@ -10,7 +10,7 @@ import {
 
 } from '@/objects/ObjectUtils'
 import { ElementObject, ElementObjectType } from '@/objects/ElementObject'
-import { FilterMultipleValueObject, StageObject, SvgObject } from '@/objects/StageObject';
+import { FilterMultipleValueObject } from '@/objects/StageObject';
 import InputGroup from './form/InputGroup.vue'
 import { useSystem } from '@/store/sys';
 
